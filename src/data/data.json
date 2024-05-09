@@ -1,0 +1,100 @@
+[
+    {
+      "id": 1,
+      "text": "What does CSS stand for?",
+      "options": [
+        { "id": 1, "text": "Cascading Style Sheets" },
+        { "id": 2, "text": "Computer Style Sheets" },
+        { "id": 3, "text": "Creative Style Sheets" },
+        { "id": 4, "text": "Cascaded Style Sheets" }
+      ],
+      "correctAnswer": "Cascading Style Sheets",
+      "isEditing": false
+    },
+    {
+      "id": 2,
+      "text": "Which HTML tag is used to define an unordered list?",
+      "options": [
+        { "id": 1, "text": "<ul>" },
+        { "id": 2, "text": "<ol>" },
+        { "id": 3, "text": "<list>" },
+        { "id": 4, "text": "<li>" }
+      ],
+      "correctAnswer": "<ul>",
+      "isEditing": false
+    },
+    {
+      "id": 3,
+      "text": "What is the purpose of JavaScript?",
+      "options": [
+        { "id": 1, "text": "To style web pages" },
+        { "id": 2, "text": "To create responsive layouts" },
+        { "id": 3, "text": "To add interactivity to web pages" },
+        { "id": 4, "text": "To define the structure of web pages" }
+      ],
+      "correctAnswer": "To add interactivity to web pages",
+      "isEditing": false
+    },
+    {
+      "id": 4,
+      "text": "What does HTML stand for?",
+      "options": [
+        { "id": 1, "text": "Hyperlinks and Text Markup Language" },
+        { "id": 2, "text": "Hyper Text Markup Language" },
+        { "id": 3, "text": "Home Tool Markup Language" },
+        { "id": 4, "text": "Hyperlink Text Markup Language" }
+      ],
+      "correctAnswer": "Hyper Text Markup Language",
+      "isEditing": false
+    },
+    {
+      "id": 5,
+      "text": "What is the correct way to comment out multiple lines of code in JavaScript?",
+      "options": [
+        { "id": 1, "text": "// This is a comment" },
+        { "id": 2, "text": "/* This is a comment */" },
+        { "id": 3, "text": "<!-- This is a comment -->" },
+        { "id": 4, "text": "# This is a comment" }
+      ],
+      "correctAnswer": "/* This is a comment */",
+      "isEditing": false
+    },
+    {
+      "id": 6,
+      "text": "Which of the following is NOT a valid CSS property?",
+      "options": [
+        { "id": 1, "text": "font-size" },
+        { "id": 2, "text": "text-align" },
+        { "id": 3, "text": "border-radius" },
+        { "id": 4, "text": "text-style" }
+      ],
+      "correctAnswer": "text-style",
+      "isEditing": false
+    },
+    {
+      "id": 7,
+      "text": "What does the 'NaN' property represent in JavaScript?",
+      "options": [
+        { "id": 1, "text": "Not a Normal" },
+        { "id": 2, "text": "Null or Negative" },
+        { "id": 3, "text": "Not a Number" },
+        { "id": 4, "text": "No Assigned Number" }
+      ],
+      "correctAnswer": "Not a Number",
+      "isEditing": false
+    },
+    {
+      "id": 8,
+      "text": "Which HTML tag is used to define a hyperlink?",
+      "options": [
+        { "id": 1, "text": "<a>" },
+        { "id": 2, "text": "<link>" },
+        { "id": 3, "text": "<href>" },
+        { "id": 4, "text": "<ref>" }
+      ],
+      "correctAnswer": "<a>",
+      "isEditing": false
+    }
+  ]
+  
+  
