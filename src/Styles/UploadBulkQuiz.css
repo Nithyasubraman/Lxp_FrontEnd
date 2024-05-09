@@ -1,0 +1,15 @@
+#dropzone{
+    display: flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:300px;
+    width:70%;
+    margin-left:15%;
+    margin-top:2%;
+    border:2px dashed rgb(117,112,112);
+    padding:20px;
+  }
+  
+
+  
