@@ -7,7 +7,7 @@ import { BiSolidCoinStack} from "react-icons/bi";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import { Link } from 'react-router-dom';
-import '../../Styles/Navbar.css';
+// import '../../Styles/Navbar.css';
 
 function AdminNavbar() {
     const [showSideNav, setShowSideNav] = useState(false);
