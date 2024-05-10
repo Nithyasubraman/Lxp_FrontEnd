@@ -4,7 +4,7 @@ import  { useState } from 'react';
 
 
 
-const BASE_URL = 'http://localhost:5199/lxp/learner/registration';
+// const BASE_URL = 'http://localhost:5199/lxp/learner/registration';
 
 const createquiz = async (quizDetails) => {
   try {

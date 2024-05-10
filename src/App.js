@@ -1,6 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
 import QuizEditorView from './view/QuizEditorView';
+import CreateQuizView from './view/CreateQuizView';
 import QuizEditor from './components/QuizEditor';
 import { Provider } from 'react-redux';
 // import store from './store/configureStore'; 
@@ -9,10 +10,9 @@ import UploadBulkQuiz from './components/UploadBulkQuiz';
 
 function App() {
   return (
-    <Router>
       <Routes>
         <Route path="/" element={<QuizEditor />} />
-      <Route path="/createquizview" element={<CreateQuizView/>}/>  
+        <Route path="/createquizview" element={<CreateQuizView/>}/>  
         <Route path='/upload' element={
           <Provider store={store}>
             <div>
@@ -21,7 +21,6 @@ function App() {
           </Provider>
         } />
       </Routes>
-    </Router>
   )};
 export default App;
 
@@ -108,5 +107,3 @@ export default App;
 // }
 
 // export default App;
-=======
->>>>>>> 2c1bdeb01ff1391565c26e797ea8cd64d1615400
