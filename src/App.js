@@ -12,6 +12,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<QuizEditor />} />
+      <Route path="/createquizview" element={<CreateQuizView/>}/>  
         <Route path='/upload' element={
           <Provider store={store}>
             <div>
@@ -21,9 +22,7 @@ function App() {
         } />
       </Routes>
     </Router>
-  );
-}
-
+  )};
 export default App;
 
 
@@ -109,3 +108,5 @@ export default App;
 // }
 
 // export default App;
+=======
+>>>>>>> 2c1bdeb01ff1391565c26e797ea8cd64d1615400
