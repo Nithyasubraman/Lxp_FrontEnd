@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from '../store/configureStore'; 
+import store from '../Store/configureStore'; 
 import QuizEditor from '../components/QuizEditor'; 
 import AdminNavbar from '../components/AdminNavbar';
 import UploadBulkQuiz from '../components/UploadBulkQuiz';

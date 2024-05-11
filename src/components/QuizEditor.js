@@ -3,7 +3,7 @@ import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
 import { PencilSquare, TrashFill, Check2Square } from 'react-bootstrap-icons';
 import jsonData from '../data/data.json';
 import AdminNavbar from '../components/AdminNavbar';
-import '../styles/QuizEditor.css';
+import '../Styles/QuizEditor.css';
 
 const QuizEditor = () => {
   const [questions, setQuestions] = useState([]);

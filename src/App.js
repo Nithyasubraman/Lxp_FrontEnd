@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
-import QuizEditorView from './view/QuizEditorView';
-import CreateQuizView from './view/CreateQuizView';
+import QuizEditorView from './View/QuizEditorView';
+import CreateQuizView from './View/CreateQuizView';
 import QuizEditor from './components/QuizEditor';
 import { Provider } from 'react-redux';
 // import store from './store/configureStore'; 
-import store from './store/fileConfigureStore';
+import store from './Store/fileConfigureStore';
 import UploadBulkQuiz from './components/UploadBulkQuiz';
 
 function App() {

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import { uploadFiles } from '../actions/fileAction';
 import AdminNavbar from '../components/AdminNavbar';
-import '../styles/UploadBulkQuiz.css';
+// import '../styles/UploadBulkQuiz.css';
 
 const UploadBulkQuiz = () => {
   const files = useSelector(state => state.files);

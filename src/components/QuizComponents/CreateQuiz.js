@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { setQuizDetails, setNameofQuiz, setDuration, setPassMark, setAttempts, setError } from '../../actions/CreateQuizAction';
 import { isFormValid, handleQuizTitleChange } from '../../utils/ValidationCreateQuiz';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/CreateQuiz.css';
+import '../../Styles/CreateQuiz.css';
 import AdminNavbar from './AdminNavbar';
 import { createquiz } from '../../middleware/api';
 import { useDispatch } from 'react-redux';

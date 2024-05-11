@@ -1,11 +1,9 @@
 import CreateQuiz from "../components/QuizComponents/CreateQuiz";
 import { Provider } from 'react-redux';
-import store from "../store/Store";
+import store from "../Store/Store";
 function CreateQuizView() {
-  return (
-  
+  return (  
   <>
-
        <Provider store={store}>
        <CreateQuiz/>
         </Provider>
