@@ -1,5 +1,5 @@
-export const isFormValid = (quizTitle, duration, grade,attempts) => {
-    return quizTitle !== '' && duration !== '' && grade !== '' &&attempts !=='';
+export const isFormValid = (nameofquiz, duration, passMark) => {
+    return nameofquiz !== '' && duration !== '' && passMark !== '';
 };
 
 export const handleQuizTitleChange = (value, setError, setQuizTitle) => {

@@ -1,48 +1,47 @@
 import React, { useRef, useState } from 'react';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom'; 
-import '../../App.css';
+import '../../App.css'
 import AdminNavbar from '../AdminNavbar';
 import axios from 'axios'; 
+import { BulkUploadQuestion } from '../../middleware/QuestionApi';
 
 const UploadBulkQuiz = () => {
   const [files, setFiles] = useState(undefined);
   const inputref = useRef();
   const navigate = useNavigate();
   const [importedQuestions, setImportedQuestions] = useState([]);
+  const allowedFileTypes = ['.xlsx'];
 
   const handleDragOver = (event) => {
     event.preventDefault();
   };
+
+  const handleFileChange = (event) => {
+    const selectedFiles = event.target.files;
+    validateFiles(selectedFiles);
+};
 
   const handleDrop = (event) => {
     event.preventDefault();
     setFiles(event.dataTransfer.files)
   };
 
-  const handleFileUpload = async (event) => {
+  const validateFiles = (files) => {
+    const selectedFileNames = Array.from(files).map(file => file.name);
+    const invalidFiles = selectedFileNames.filter(fileName => !allowedFileTypes.some(type => fileName.endsWith(type)));
 
-    if(files && files.length>0){
-      const file = files[0];
-    const formData = new FormData();
-    formData.append('file', file);
+    if (invalidFiles.length > 0) {
+        alert(`Invalid file types: ${invalidFiles.join(', ')}. Please select .xlsx file`);
+    } else {
+        setFiles(files);
+    }
+};
 
-    try {
-      const response = await axios.post('https://localhost:7005/api/BulkQuestion/ImportQuizData', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log("response",response.data);
-      const importedQuestions = response.data; 
-      setImportedQuestions(importedQuestions); 
-      navigate('/', { state: { importedQuestions } }); 
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-    }else{
-      console.log("no file")
-    }
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
+    BulkUploadQuestion(files);
+    navigate('/')
   };
   return (
     <>
@@ -56,7 +55,7 @@ const UploadBulkQuiz = () => {
           <FaCloudUploadAlt style={{ fontSize: "50px", marginTop: "-3%" }} />
           <h5>Drag and Drop Files to Upload</h5>
           <h5>Or</h5>
-          <input type='file' multiple onChange={(event) => setFiles(event.target.files)} hidden ref={inputref} />
+          <input type='file' multiple onChange={handleFileChange} hidden ref={inputref}/>
           <button onClick={(e) => { e.preventDefault(); inputref.current.click() }}>Browse Files</button>
         </div>
         <div style={{ marginLeft: "25%", marginTop: "2%" }}>

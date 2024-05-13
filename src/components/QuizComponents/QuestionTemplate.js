@@ -1,14 +1,15 @@
 import React from 'react';
 
-const QuestionTemplate = ({ question }) => {
+export const QuestionTemplate = ({ question }) => {
+  console.log("template",question);
   if (!question || !question.options || !question.correctOptions) {
     return null; 
   }
-
+  
   return (
     <div className="card mt-3">
       <div className="card-body">
-        <h5 className="card-title">Question {question.questionNumber}:</h5>
+        <h5 className="card-title">Question {question.questionNo}:</h5>
         <input value={question.question} className='form-control' readOnly/>
         <div className="form-group">
           <label htmlFor={`options_${question.id}`}>Options:</label>
@@ -43,4 +44,3 @@ const QuestionTemplate = ({ question }) => {
   );
 };
 
-export default QuestionTemplate;

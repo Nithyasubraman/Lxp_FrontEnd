@@ -9,7 +9,7 @@ import  { useState } from 'react';
 const createquiz = async (quizDetails) => {
   try {
     console.log("details",quizDetails);
-    const response = await axios.post(`https://localhost:7005/api/Quiz?nameOfQuiz=${quizDetails.nameOfQuiz}&duration=${quizDetails.duration}&passMark=${quizDetails.passMark}`);
+    const response = await axios.post('https://localhost:7005/api/Quiz',quizDetails);
   } catch (error) {
     console.error("Error:", error.message);
     throw  error.message;
