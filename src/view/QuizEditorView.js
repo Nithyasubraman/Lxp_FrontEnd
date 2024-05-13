@@ -1,17 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from '../Store/configureStore'; 
-import QuizEditor from '../components/QuizEditor'; 
-import AdminNavbar from '../components/AdminNavbar';
-import UploadBulkQuiz from '../components/UploadBulkQuiz';
+import store from '../Store/configureStore';
+import QuizEditor from '../components/QuizEditor';
+
 
 const QuizEditorView = () => {
   return (
     <Provider store={store}>
-      <div>
-        <QuizEditor/>
-        {/* <UploadBulkQuiz/> */}
-      </div>
+      <QuizEditor />
     </Provider>
   );
 };

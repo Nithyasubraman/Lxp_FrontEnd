@@ -6,13 +6,14 @@ import QuizEditor from './components/QuizEditor';
 import { Provider } from 'react-redux';
 // import store from './store/configureStore'; 
 import store from './Store/fileConfigureStore';
-import UploadBulkQuiz from './components/UploadBulkQuiz';
-
+import UploadBulkQuiz from './components/QuizComponents/UploadBulkQuiz';
+import './App.css'
+import './Styles/CreateQuiz.css'
 function App() {
   return (
       <Routes>
-        <Route path="/" element={<QuizEditor />} />
-        <Route path="/createquizview" element={<CreateQuizView/>}/>  
+        <Route path="/quiz" element={<QuizEditor />} />
+        <Route path="/" element={<CreateQuizView/>}/>  
         <Route path='/upload' element={
           <Provider store={store}>
             <div>
