@@ -3,17 +3,20 @@ import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-rou
 import QuizEditorView from './View/QuizEditorView';
 import CreateQuizView from './View/CreateQuizView';
 import QuizEditor from './components/QuizEditor';
+import { QuestionTemplate } from './components/QuizComponents/QuestionTemplate';
 import { Provider } from 'react-redux';
 // import store from './store/configureStore'; 
 import store from './Store/fileConfigureStore';
 import UploadBulkQuiz from './components/QuizComponents/UploadBulkQuiz';
 import './App.css'
 import './Styles/CreateQuiz.css'
+import QuestionTemplateView from './View/QuestionTemplateView';
 function App() {
   return (
       <Routes>
         <Route path="/quiz" element={<QuizEditor />} />
         <Route path="/" element={<CreateQuizView/>}/>  
+        <Route path='/questiontemplate' element={<QuestionTemplateView/>}/>
         <Route path='/upload' element={
           <Provider store={store}>
             <div>

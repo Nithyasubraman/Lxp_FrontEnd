@@ -3,11 +3,13 @@
 // import quizReducer from './CreateQuizReducer';
 import { combineReducers } from 'redux';
 import quizReducer from './CreateQuizReducer';
+import questionReducer from './GetAllQuestionReducers';
 
-const root = combineReducers({
+const rootReducer = combineReducers({
   // quiz:rootReducer
   quiz:quizReducer,
+  questions: questionReducer
   // // ... other reducers ...
 });
 
-export default root;
+export default rootReducer;

@@ -8,6 +8,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 import AdminNavbar from './AdminNavbar';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import '../../Styles/CreateQuiz.css';
@@ -17,7 +18,7 @@ import { createquiz } from '../../middleware/api';
 import { GetAllQuestion } from '../../middleware/QuestionApi';
 
 
-export default function Home() {
+export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
     const [showOptions, setShowOptions] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [quizTitle, setQuizTitle] = useState('');
@@ -27,6 +28,7 @@ export default function Home() {
     const location = useLocation();
     const [selectedQuestionType, setSelectedQuestionType] = useState('');
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
+    const [importedQuestions, setImportedQuestions] = useState([]);
     const [newQuestion, setNewQuestion] = useState({
         question: '',
         questionType: '',
@@ -40,7 +42,6 @@ export default function Home() {
         attemptsAllowed: ''
     });
 
-    const [importedQuestions, setImportedQuestions] = useState([]);
 
     useEffect(() => {
         fetchQuestions();
@@ -158,8 +159,7 @@ export default function Home() {
 
     const fetchQuestions = async () => {
         try {
-            const questions = await GetAllQuestion();
-            setImportedQuestions(questions)
+            await GetAllQuestion();
         } catch (error) {
             console.error('Error fetching data:', error)
         }
@@ -168,6 +168,7 @@ export default function Home() {
 
     return (
         <div >
+
             <AdminNavbar />
             <form className=' main-content'>
                 <div className="card" id="QuizCard">
@@ -222,11 +223,14 @@ export default function Home() {
                     </div>
                 </div>
             </form>
+
             <div className='question template container'>
-                {importedQuestions && importedQuestions.length > 0 && (
+                {loading && <p>Loading...</p>}
+                {error && <p>Error: {error}</p>}
+                {questions && questions.length > 0 && (
                     <div>
                         <h3>Uploaded Questions</h3>
-                        {importedQuestions.map((question, index) => (
+                        {questions.map((question, index) => (
                             <div key={index}>
                                 <QuestionTemplate question={question} />
                             </div>
@@ -334,4 +338,19 @@ export default function Home() {
             </Modal>
         </div>
     );
-}
+};
+
+const mapStateToProps = state => {
+    console.log('redux', state);
+    return {
+        questions: state.questions.questions,
+        loading: state.questions.loading,
+        error: state.questions.error
+    };
+};
+
+const mapDispatchToProps = {
+    GetAllQuestion
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

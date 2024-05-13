@@ -3,15 +3,14 @@ import { Provider } from 'react-redux';
 import store from "../Store/Store";
 import '../Styles/CreateQuiz.css'
 import { QuestionTemplate } from "../components/QuizComponents/QuestionTemplate";
-function CreateQuizView() {
+function QuestionTemplateView() {
   return (
     <>
       <Provider store={store}>
-        <CreateQuiz />
         <QuestionTemplate/>
       </Provider>
     </>
   );
 }
 
-export default CreateQuizView;
+export default QuestionTemplateView;
