@@ -19,6 +19,7 @@ import { GetAllQuestion } from '../../middleware/QuestionApi';
 // import { getQuizById } from '../../middleware/api';
 import { GetQuizDetails } from '../../middleware/api';
 
+
 export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     const [showOptions, setShowOptions] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -130,7 +131,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const handleSaveQuestion = () => {
         const requestBody = {
-            quizId: "3e2ac1a6-d882-4566-b229-7cdd516a3b24",
+            quizId: "d9f26cf2-31ba-43ea-a70f-0dd6d38f490a",
             question: newQuestion.question,
             questionType: newQuestion.questionType,
             options: newQuestion.options.map((option, index) => ({
@@ -192,7 +193,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             passMark: parseInt(quizData.passMark)
         };
 
-        axios.put('https://localhost:7005/api/Quiz/e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6', updatedQuizData)
+        axios.put('https://localhost:7005/api/Quiz/d9f26cf2-31ba-43ea-a70f-0dd6d38f490a', updatedQuizData)
             .then(response => {
                 console.log('Quiz updated successfully:', response.data);
             })
@@ -204,7 +205,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const handleDeleteQuiz = () => {
 
-        axios.delete('https://localhost:7005/api/Quiz/e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6')
+        axios.delete('https://localhost:7005/api/Quiz/d9f26cf2-31ba-43ea-a70f-0dd6d38f490a')
             .then(response => {
                 console.log('Quiz deleted successfully:', response.data);
             })
@@ -306,42 +307,53 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                 {error && <p>Error: {error}</p>}
                 {questions && questions.length > 0 && (
                     <div>
-                        <h3>Uploaded Questions</h3>
+                        {/* <h3>Uploaded Questions</h3> */}
+                        <div className='con'>
+                        <div className="header">
+                        <div className="text">Uploaded Questions</div>
+                        <div className="underline"></div>
+                        </div>
+                        </div>
+                        
                         {questions.map((question, index) => (
-                            <div key={index} className='card mt-3'>
-                                <div className='d-flex justify-content-end'>
-                                    <a onClick={() => { handleOpenEditQuestionModal(question.quizQuestionId) }} className='m-2 me-2'><BiSolidPencil style={{ fontSize: "25" }} /></a>
-                                    <a className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23" }} /></a>
+                            <div key={index} className='card mt-3 shadow rounded' style={{ backgroundColor: "rgb(226, 223, 208)",width:"90%",marginLeft:"8%" }}>
+                                <div className='d-flex justify-content-end w-60'>
+                                    <a onClick={() => { handleOpenEditQuestionModal(question.quizQuestionId) }} className='m-2 me-2'><BiSolidPencil style={{ fontSize: "25", color:"#365486" }} /></a>
+                                    <a className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23", color:"#365486" }} /></a>
                                 </div>
-                                <div className="card-body">
-                                    <h5 className="card-title">Question {question.questionNo}:</h5>
-
-                                    <input value={question.question} className='form-control' readOnly />
-                                    <div className="form-group">
-                                        <label>Options:</label>
+                               
+                                <div className="card-body w-60 ">
+                                    <h5 className="card-title ">Question {question.questionNo}:</h5>
+                                    <input value={question.question} className='form-control shadow p-2 mb-7 bg-white rounded' readOnly />  
+              
+                                    <div className="form-group w-50">
+                                        <div><h5>Options:</h5></div>
                                         {question.options.map((option, index) => (
-                                            <input
+                                              <input
                                                 key={index}
                                                 type="text"
-                                                className="form-control mt-2"
+                                                rows={2}
+                                                style={{ width: '190px', marginBottom: '10px', marginLeft:"10%" }}
+                                                className="form-inline mt-2 shadow p-2 mb-7 bg-white rounded border-light"
                                                 value={option.option}
                                                 readOnly
                                             />
                                         ))}
                                     </div>
-                                    <div className="form-group">
-                                        <label>Correct Answers:</label>
+
+                                    <div className="form-group w-60">
+                                        <h5>Correct Answers:</h5>
                                         {question.options.filter(option => option.isCorrect).map((correctOption, index) => (
                                             <input
                                                 key={index}
                                                 type="text"
-                                                className="form-control mt-2"
+                                                className="form-control mt-2 shadow p-2 mb-7 bg-white rounded "
                                                 value={correctOption.option}
                                                 readOnly
                                             />
                                         ))}
                                     </div>
-                                    <button onClick={handleOpenAddQuestionModal} className="btn btn-primary mt-3 mb-5 float-right">Add Question</button>
+                                    <button onClick={handleOpenAddQuestionModal} id="btn">Add More Questions</button>
 
                                 </div>
 
@@ -473,6 +485,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                                 <label>Question:</label>
                                 <input className='form-control' type="text" value={newQuestion.question} onChange={(e) => handleChange(-1, 'question', e.target.value)} />
                             </div>
+                        
                             {[...Array(4)].map((_, index) => (
                                 <div className="form-group" key={index}>
                                     <label>Option {index + 1}:</label>
