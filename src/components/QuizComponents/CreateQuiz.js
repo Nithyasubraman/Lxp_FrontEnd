@@ -16,7 +16,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { QuestionTemplate } from './QuestionTemplate';
 import { createquiz } from '../../middleware/api';
 import { GetAllQuestion } from '../../middleware/QuestionApi';
-// import { getQuizById } from '../../middleware/api';
 import { GetQuizDetails } from '../../middleware/api';
 
 export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
