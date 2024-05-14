@@ -2,11 +2,6 @@ import axios from 'axios';
 import  { useState } from 'react';
 import { fetchQuestionsFailure, fetchQuestionsRequest, fetchQuestionsSuccess } from '../actions/GetAllQuestionAction';
 
-
-
-
-// const BASE_URL = 'http://localhost:5199/lxp/learner/registration';
-
 export const BulkUploadQuestion = async (files) => {
     if(files && files.length>0){
         const file = files[0];
