@@ -52,8 +52,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     const [showEditQuestionModal, setShowEditQuestionModal] = useState(false);
     const [editedQuestion, setEditedQuestion] = useState({
         question: '',
-        options: ['', '', '', ''],
-        correctOptions: []
+        options: ['', '', '', '', '', '', '', ''],
+        correctOptions: ['', '', '']
     });
 
 
@@ -215,9 +215,14 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const handleOpenEditQuestionModal = async (quizQuestionId) => {
         try {
-            const response = await axios.get(`https://localhost:7005/api/QuizQuestions/${quizQuestionId}`);
-            const questionData = response.data; // Assuming your API returns the question data
-            setEditedQuestion(questionData);
+            const response = await axios.get(`https://localhost:7005/api/QuizQuestions/GetQuestionById?quizQuestionId=${quizQuestionId}`);
+            const questionData = response.data;
+            setEditedQuestion({
+                question: questionData.question,
+                options: questionData.options.map(option => option.option),
+                correctOptions: questionData.options.filter(option => option.isCorrect).map(option => option.option)
+            });
+
             setShowEditQuestionModal(true);
         } catch (error) {
             console.error('Error fetching question data:', error);
@@ -229,16 +234,26 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     };
 
     const handleUpdateQuestion = () => {
-        const { quizQuestionId, ...updatedQuestion } = editedQuestion; // Assuming your question data includes the quizQuestionId
-        axios.put(`https://localhost:7005/api/QuizQuestions/UpdateQuestion/${quizQuestionId}`, updatedQuestion)
-            .then(response => {
-                console.log('Question updated successfully:', response.data);
-                handleCloseEditQuestionModal();
-            })
-            .catch(error => {
-                console.error('Error updating question:', error);
-            });
-    };
+        const { quizQuestionId, ...updatedQuestion } = editedQuestion;
+        const updatedOptions = updatedQuestion.options.map((option, index) => ({
+          option,
+          isCorrect: updatedQuestion.correctOptions.includes(option)
+        }));
+      
+        const requestBody = {
+          ...updatedQuestion,
+          options: updatedOptions
+        };
+      
+        axios.put(`https://localhost:7005/api/QuizQuestions/UpdateQuestion/${quizQuestionId}`, requestBody)
+          .then(response => {
+            console.log('Question updated successfully:', response.data);
+            handleCloseEditQuestionModal();
+          })
+          .catch(error => {
+            console.error('Error updating question:', error);
+          });
+      };
 
     return (
         <div >
@@ -295,7 +310,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                         {questions.map((question, index) => (
                             <div key={index} className='card mt-3'>
                                 <div className='d-flex justify-content-end'>
-                                    <a onClick={handleOpenEditQuestionModal} className='m-2 me-2'><BiSolidPencil style={{ fontSize: "25" }} /></a>
+                                    <a onClick={() => { handleOpenEditQuestionModal(question.quizQuestionId) }} className='m-2 me-2'><BiSolidPencil style={{ fontSize: "25" }} /></a>
                                     <a className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23" }} /></a>
                                 </div>
                                 <div className="card-body">
@@ -397,7 +412,19 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                     ))}
                     <div className="form-group">
                         <label>Correct Options:</label>
-                        <input className='form-control' type="text" value={editedQuestion.correctOptions.join(',')} onChange={(e) => setEditedQuestion({ ...editedQuestion, correctOptions: e.target.value.split(',') })} />
+                        {editedQuestion.correctOptions.map((option, index) => (
+                            <input
+                                key={index}
+                                className='form-control mt-2'
+                                type="text"
+                                value={option}
+                                onChange={(e) => {
+                                    const updatedCorrectOptions = [...editedQuestion.correctOptions];
+                                    updatedCorrectOptions[index] = e.target.value;
+                                    setEditedQuestion({ ...editedQuestion, correctOptions: updatedCorrectOptions });
+                                }}
+                            />
+                        ))}
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
