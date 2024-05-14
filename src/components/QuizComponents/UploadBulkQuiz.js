@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom'; 
-import '../../App.css'
+import '../../Styles/UploadBulkQuiz.css'
 import AdminNavbar from '../AdminNavbar';
 import axios from 'axios'; 
 import { BulkUploadQuestion } from '../../middleware/QuestionApi';
@@ -47,19 +47,19 @@ const UploadBulkQuiz = () => {
     <>
       <AdminNavbar />
       <div id='uploadContent'>
-        <h5 style={{ marginTop: "-40%", marginLeft: "25%" }}>Upload Question from device </h5>
+        <h5 id="heading" style={{ marginTop: "-40%", marginLeft: "25%" }}>Upload Question from device </h5>
         <div id='dropzone'
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          <FaCloudUploadAlt style={{ fontSize: "50px", marginTop: "-3%" }} />
-          <h5>Drag and Drop Files to Upload</h5>
-          <h5>Or</h5>
+          <FaCloudUploadAlt style={{ fontSize: "50px", marginTop: "-3%" , color:"#365486" }} />
+          <h5 id='heading'>Drag and Drop Files to Upload</h5>
+          <h5 id='heading'>Or</h5>
           <input type='file' multiple onChange={handleFileChange} hidden ref={inputref}/>
-          <button onClick={(e) => { e.preventDefault(); inputref.current.click() }}>Browse Files</button>
+          <button class="btn btn-light" style={{backgroundColor:"#365486", color:"white"}} onClick={(e) => { e.preventDefault(); inputref.current.click() }}>Browse Files</button>
         </div>
         <div style={{ marginLeft: "25%", marginTop: "2%" }}>
-          <h5>Supported File formats : .xlsx</h5>
+          <h5 id="heading">Supported File formats : .xlsx</h5>
           <br />
 
           {files ? <>
@@ -74,12 +74,13 @@ const UploadBulkQuiz = () => {
         <br />
         <div className="position-absolute start-50 translate-middle">
           <button
-            className="btn btn-secondary mt-3"
+            style={{backgroundColor:"#365486", color:"white"}} 
+            className="btn btn-light mt-3"
             type="submit"
             onClick={handleFileUpload}
             disabled={!files||files.length===0}
           >
-            Upload
+            Upload File
           </button>
         </div>
 
