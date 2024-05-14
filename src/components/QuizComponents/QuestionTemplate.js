@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const QuestionTemplate = ({ question }) => {
-  console.log("template",question);
   if (!question || !question.options || !question.correctOptions) {
     return null; 
   }

@@ -16,9 +16,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { QuestionTemplate } from './QuestionTemplate';
 import { createquiz } from '../../middleware/api';
 import { GetAllQuestion } from '../../middleware/QuestionApi';
+// import { getQuizById } from '../../middleware/api';
+import { GetQuizDetails } from '../../middleware/api';
 
-
-export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
+export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     const [showOptions, setShowOptions] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [quizTitle, setQuizTitle] = useState('');
@@ -28,7 +29,7 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
     const location = useLocation();
     const [selectedQuestionType, setSelectedQuestionType] = useState('');
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
-    const [importedQuestions, setImportedQuestions] = useState([]);
+    const [showQuizEditModal, setShowQuizEditModal] = useState(false);
     const [newQuestion, setNewQuestion] = useState({
         question: '',
         questionType: '',
@@ -41,12 +42,18 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
         passMark: '',
         attemptsAllowed: ''
     });
+    const [quizData, setQuizData] = useState({
+        nameOfQuiz: '',
+        duration: 0,
+        passMark: 0,
+        attemptsAllowed: ''
+    });
 
 
     useEffect(() => {
         fetchQuestions();
+        fetchQuizData();
     }, []);
-
 
     const toggleOptions = (event) => {
         event.preventDefault();
@@ -64,13 +71,9 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
         setShowModal(false);
     };
 
-
-
-    // Function to check if all input fields are filled
     const isFormValid = () => {
         return quizDetails.nameOfQuiz !== '' && quizDetails.duration !== '' && quizDetails.passMark !== '';
     };
-
 
     const handleQuizTitleChange = (e) => {
         const value = e.target.value;
@@ -90,15 +93,22 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
         setShowAddQuestionModal(false);
     };
 
+    const handleCloseQuizEditModal = () => {
+        setShowQuizEditModal(false);
+    }
+
+    const handleOpenQuizEditModal = () => {
+        setShowQuizEditModal(true);
+    }
+
     const handleChange = (index, field, value) => {
+
         if (field === 'correctOptions') {
-            // Update the correctOptions array at the specified index
             setNewQuestion(prevState => ({
                 ...prevState,
                 correctOptions: [...prevState.correctOptions.slice(0, index), value, ...prevState.correctOptions.slice(index + 1)]
             }));
         } else {
-            // For other fields, update normally
             setNewQuestion(prevState => ({
                 ...prevState,
                 [field]: index === -1 ? value : [...prevState[field].slice(0, index), value, ...prevState[field].slice(index + 1)]
@@ -108,10 +118,10 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
 
     const handleQuizChange = (e) => {
         setQuizDetails({ ...quizDetails, [e.target.name]: e.target.value })
+        setQuizData({...quizData, [e.target.name]: e.target.value})
     };
 
     const handleSaveQuestion = () => {
-        // Construct the request body
         const requestBody = {
             quizId: "3e2ac1a6-d882-4566-b229-7cdd516a3b24",
             question: newQuestion.question,
@@ -121,19 +131,12 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
                 isCorrect: newQuestion.correctOptions.includes(option) // Check if option is in correctOptions array
             }))
         };
-
-        console.log("request body", requestBody);
-
-        // Make a POST request to the backend API endpoint
         axios.post('https://localhost:7005/api/QuizQuestions/AddQuestion', requestBody)
             .then(response => {
-                // Handle success response
                 console.log('Question added successfully:', response.data);
-                // Close the modal after saving
                 handleCloseAddQuestionModal();
             })
             .catch(error => {
-                // Handle error
                 console.error('Error adding question:', error);
             });
     };
@@ -157,14 +160,50 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
         setPassMark('SET_PASSMARK', e.target.value);
     };
 
+    const fetchQuizData = async () => {
+        try {
+            const data = await GetQuizDetails();
+            setQuizData(data);
+        } catch (error) {
+            console.error('Error fetching data:', error)
+        }
+    }
+
     const fetchQuestions = async () => {
         try {
             await GetAllQuestion();
         } catch (error) {
             console.error('Error fetching data:', error)
         }
-
     }
+
+    const handleUpdateQuiz = () => {
+        const updatedQuizData = {
+            nameOfQuiz: quizData.nameOfQuiz,
+            duration: parseInt(quizData.duration),
+            attemptsAllowed: parseInt(quizData.attemptsAllowed),
+            passMark: parseInt(quizData.passMark)
+        };
+    
+        axios.put('https://localhost:7005/api/Quiz/e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6', updatedQuizData)
+            .then(response => {
+                console.log('Quiz updated successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error updating quiz:', error);
+            });
+    };
+
+    const handleDeleteQuiz = () => {
+    
+        axios.delete('https://localhost:7005/api/Quiz/e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6')
+            .then(response => {
+                console.log('Quiz deleted successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error updating quiz:', error);
+            });
+    };
 
     return (
         <div >
@@ -175,13 +214,12 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
                     <div className="card-body">
                         <div className="d-flex mt-2">
                             <div className="container">
-                                <BiSolidPencil style={{ fontSize: "25", marginLeft: "90%" }} />
-                                <FaTrashCan style={{ fontSize: "23", marginLeft: "2%" }} />
-
+                                <a onClick={handleOpenQuizEditModal} ><BiSolidPencil style={{ fontSize: "25", marginLeft: "90%" }} /></a>
+                                <a><FaTrashCan style={{ fontSize: "23", marginLeft: "2%" }} /></a>
                                 <div className="form-group row mt-3">
                                     <label htmlFor="lbl1" className="col-sm-3 col-form-label" style={{ fontWeight: "bold" }} >Quiz Title<span id='required'>*</span></label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="lbl1" placeholder="Enter the Quiz Title" style={{ borderRadius: 8 }} name='nameOfQuiz' value={quizDetails.nameOfQuiz} onChange={(e) => { handleQuizChange(e) }} />
+                                        <input type="text" className="form-control" id="lbl1" placeholder="Enter the Quiz Title" style={{ borderRadius: 8 }} name='nameOfQuiz' value={quizDetails.nameOfQuiz} onChange={(e) => { handleQuizTitleChange(e); handleQuizChange(e) }} />
                                         {error && <p style={{ color: 'red', fontSize: "50" }}>{error}</p>}
                                     </div>
                                 </div>
@@ -197,22 +235,12 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
                                         <input type="number" class="form-control" id="lbl5" placeholder="Enter the Minimum Score to be Passed" style={{ borderRadius: 8 }} name='passMark' value={quizDetails.passMark} onChange={(e) => { handleGradeChange(e); handleQuizChange(e) }}></input>
                                     </div>
                                 </div>
-
                                 <div class="form-group row mt-3">
                                     <label for="lbl4" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Attempts Allowed<span id='required'>*</span></label>
                                     <div class="col-sm-8">
                                         <input type="text" className="form-control" id="lbl1" placeholder="Attempts Allowed" style={{ borderRadius: 8 }} name='attemptsAllowed' value={quizDetails.attemptsAllowed} onChange={(e) => { handleQuizChange(e) }} />
                                     </div>
                                 </div>
-
-                                {/* <div class="form-group row mt-3">
-                                     <label for="lbl2" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }} >No of Question<span id='required'>*</span></label>
-                                     <div class="col-sm-8">
-                                         <input type="number" class="form-control" id="lbl2" placeholder="Enter the Number Of Questions" style={{ borderRadius: 8 }}onChange={(e) => setNumQuestions(e.target.value)}></input>
-                                     </div>
-                              </div> */}
-
-
                                 <div className="form-group row">
                                     <div className="col-sm-10">
                                         <button type="submit" className="btn btn-primary" onClick={(e) => { handleUploadClick(e) }} style={{ marginLeft: "50%", marginTop: "3%", borderRadius: 8 }} disabled={!isFormValid()}>+ Add Questions</button>
@@ -231,14 +259,90 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
                     <div>
                         <h3>Uploaded Questions</h3>
                         {questions.map((question, index) => (
-                            <div key={index}>
-                                <QuestionTemplate question={question} />
+                            <div key={index} className='card mt-3'>
+                                <div className='d-flex justify-content-end'>
+                                    <a onClick={handleOpenQuizEditModal} className='m-2 me-2'><BiSolidPencil style={{ fontSize: "25" }} /></a>
+                                    <a className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23" }} /></a>
+                                </div>
+                                <div className="card-body">
+                                    <h5 className="card-title">Question {question.questionNo}:</h5>
+
+                                    <input value={question.question} className='form-control' readOnly />
+                                    <div className="form-group">
+                                        <label>Options:</label>
+                                        {question.options.map((option, index) => (
+                                            <input
+                                                key={index}
+                                                type="text"
+                                                className="form-control mt-2"
+                                                value={option.option}
+                                                readOnly
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Correct Answers:</label>
+                                        {question.options.filter(option => option.isCorrect).map((correctOption, index) => (
+                                            <input
+                                                key={index}
+                                                type="text"
+                                                className="form-control mt-2"
+                                                value={correctOption.option}
+                                                readOnly
+                                            />
+                                        ))}
+                                    </div>
+                                    <button onClick={handleOpenAddQuestionModal} className="btn btn-primary mt-3 mb-5 float-right">Add Question</button>
+
+                                </div>
+                                
                             </div>
+                            
                         ))}
+                        
                     </div>
                 )}
-                <button onClick={handleOpenAddQuestionModal} className="btn btn-primary mt-3 mb-5 float-right">Add Question</button>
+                
             </div>
+            <Modal show={showQuizEditModal} onHide={handleCloseQuizEditModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Quiz Editor</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="container">
+                        <div className="form-group row mt-3">
+                            <label htmlFor="lbl1" className="col-sm-3 col-form-label" style={{ fontWeight: "bold" }} >Quiz Title<span id='required'>*</span></label>
+                            <div className="col-sm-8">
+                                <input type="text" className="form-control" id="lbl1" placeholder="Enter the Quiz Title" style={{ borderRadius: 8 }} name='nameOfQuiz' value={quizData.nameOfQuiz} onChange={(e) => { handleQuizTitleChange(e); handleQuizChange(e) }} />
+                                {error && <p style={{ color: 'red', fontSize: "50" }}>{error}</p>}
+                            </div>
+                        </div>
+                        <div class="form-group row mt-3">
+                            <label for="lbl3" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Duration (In Minutes)<span id='required'>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" id="lbl3" placeholder="Enter the Time Limit in Minutes" style={{ borderRadius: 8 }} name='duration' value={quizData.duration} onChange={(e) => { handleDurationChange(e); handleQuizChange(e) }}></input>
+                            </div>
+                        </div>
+                        <div class="form-group row mt-3">
+                            <label for="lbl5" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Grade to be Secured<span id='required'>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" id="lbl5" placeholder="Enter the Minimum Score to be Passed" style={{ borderRadius: 8 }} name='passMark' value={quizData.passMark} onChange={(e) => { handleGradeChange(e); handleQuizChange(e) }}></input>
+                            </div>
+                        </div>
+                        <div class="form-group row mt-3">
+                            <label for="lbl4" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Attempts Allowed<span id='required'>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" className="form-control" id="lbl1" placeholder="Attempts Allowed" style={{ borderRadius: 8 }} name='attemptsAllowed' value={quizData.attemptsAllowed} onChange={(e) => { handleQuizChange(e) }} />
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseQuizEditModal}>Close</Button>
+                    <Button variant="primary" onClick={handleUpdateQuiz}>Save</Button>
+                </Modal.Footer>
+            </Modal>
+
             <Modal show={showAddQuestionModal} onHide={handleCloseAddQuestionModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add New Question</Modal.Title>
@@ -323,7 +427,6 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
                 </Modal.Footer>
             </Modal>
 
-
             <Modal show={showModal} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title id='questitle'>Question Library</Modal.Title>
@@ -341,16 +444,17 @@ export const Home = ({ questions, loading, errors, GetAllQuestion }) => {
 };
 
 const mapStateToProps = state => {
-    console.log('redux', state);
     return {
         questions: state.questions.questions,
         loading: state.questions.loading,
-        error: state.questions.error
+        error: state.questions.error,
+        editQuiz: state.editQuiz
     };
 };
 
 const mapDispatchToProps = {
-    GetAllQuestion
+    GetAllQuestion,
+    // getQuizById
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

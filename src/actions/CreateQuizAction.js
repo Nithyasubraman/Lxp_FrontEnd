@@ -1,7 +1,17 @@
 // Action types
 export const SET_QUIZ_DETAILS = 'SET_QUIZ_DETAILS';
+export const FETCH_QUIZ_REQUEST = 'FETCH_QUIZ_REQUEST';
+export const FETCH_QUIZ_SUCCESS = 'FETCH_QUIZ_SUCCESS';
 
 
+export const fetchQuizByIdRequest = () => ({
+    type: FETCH_QUIZ_REQUEST
+});
+
+export const fetchQuizByIdSuccess = editQuiz => ({
+    type: FETCH_QUIZ_SUCCESS,
+    payload:editQuiz
+});
 
 // Action Creators
 export const setQuizDetails = quizDetails => ({
@@ -11,7 +21,7 @@ export const setQuizDetails = quizDetails => ({
 
 export const setNameofQuiz = nameofquiz => ({
     type: 'SET_NAME_OF_QUIZ',
-    payload:nameofquiz,
+    payload: nameofquiz,
 });
 
 export const setDuration = duration => ({
@@ -21,7 +31,7 @@ export const setDuration = duration => ({
 
 export const setPassMark = passMark => ({
     type: 'SET_PassMark',
-    payload:passMark,
+    payload: passMark,
 });
 
 export const setAttempts = attempts => ({

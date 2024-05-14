@@ -28,13 +28,13 @@ export const BulkUploadQuestion = async (files) => {
       }
 };
 
+
+
 export const GetAllQuestion = () => async dispatch => {
   dispatch(fetchQuestionsRequest());
       try {
         const response = await axios.get('https://localhost:7005/api/QuizQuestions/GetAllQuestions');
-        console.log("GetAllQuestions",response.data);
         dispatch(fetchQuestionsSuccess(response.data));
-        return response.data;
       } catch (error) {
         dispatch(fetchQuestionsFailure(error.message))
         console.error('Error uploading file:', error);
