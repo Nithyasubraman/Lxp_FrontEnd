@@ -51,6 +51,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const [showEditQuestionModal, setShowEditQuestionModal] = useState(false);
     const [editedQuestion, setEditedQuestion] = useState({
+        quizQuestionId: '',
+        questionType:'',
         question: '',
         options: ['', '', '', '', '', '', '', ''],
         correctOptions: ['', '', '']
@@ -130,7 +132,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const handleSaveQuestion = () => {
         const requestBody = {
-            quizId: "3e2ac1a6-d882-4566-b229-7cdd516a3b24",
+            quizId: "e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6",
             question: newQuestion.question,
             questionType: newQuestion.questionType,
             options: newQuestion.options.map((option, index) => ({
@@ -218,6 +220,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             const response = await axios.get(`https://localhost:7005/api/QuizQuestions/GetQuestionById?quizQuestionId=${quizQuestionId}`);
             const questionData = response.data;
             setEditedQuestion({
+                questionType: questionData.questionType,
+                quizQuestionId: quizQuestionId,
                 question: questionData.question,
                 options: questionData.options.map(option => option.option),
                 correctOptions: questionData.options.filter(option => option.isCorrect).map(option => option.option)
@@ -231,6 +235,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const handleCloseEditQuestionModal = () => {
         setShowEditQuestionModal(false);
+        window.location.reload();
     };
 
     const handleUpdateQuestion = () => {
@@ -242,18 +247,37 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
       
         const requestBody = {
           ...updatedQuestion,
-          options: updatedOptions
+          options: updatedOptions,
+          quizId: "e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6",
         };
-      
-        axios.put(`https://localhost:7005/api/QuizQuestions/UpdateQuestion/${quizQuestionId}`, requestBody)
+        console.log("request",requestBody);
+        console.log("quizQuestionId",quizQuestionId)
+        axios.put(`https://localhost:7005/api/QuizQuestions/UpdateQuestion?quizQuestionId=${quizQuestionId}`, requestBody,{
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        })
           .then(response => {
             console.log('Question updated successfully:', response.data);
             handleCloseEditQuestionModal();
+
           })
           .catch(error => {
             console.error('Error updating question:', error);
           });
       };
+
+      const handleDeleteQuestion = (quizQuestionId) => {
+
+        axios.delete(`https://localhost:7005/api/QuizQuestions/DeleteQuestion?quizQuestionId=${quizQuestionId}`)
+            .then(response => {
+                console.log('Question deleted successfully:', response.data);
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error updating quiz:', error);
+            });
+    };
 
     return (
         <div >
@@ -311,7 +335,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                             <div key={index} className='card mt-3'>
                                 <div className='d-flex justify-content-end'>
                                     <a onClick={() => { handleOpenEditQuestionModal(question.quizQuestionId) }} className='m-2 me-2'><BiSolidPencil style={{ fontSize: "25" }} /></a>
-                                    <a className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23" }} /></a>
+                                    <a onClick={()=>{handleDeleteQuestion(question.quizQuestionId)}} className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23" }} /></a>
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Question {question.questionNo}:</h5>
@@ -429,7 +453,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseEditQuestionModal}>Close</Button>
-                    <Button variant="primary" onClick={handleUpdateQuestion}>Save Changes</Button>
+                    <Button variant="primary" onClick={()=>{handleUpdateQuestion()}}>Save Changes</Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={showAddQuestionModal} onHide={handleCloseAddQuestionModal}>
