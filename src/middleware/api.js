@@ -14,7 +14,11 @@ const createquiz = async (quizDetails) => {
 
 export const GetQuizDetails = async() =>{
   try {
+<<<<<<< HEAD
     const response = await axios.get('https://localhost:7005/api/Quiz/44e6da44-1387-4e47-b097-637b8b24d69c');
+=======
+    const response = await axios.get('https://localhost:7005/api/Quiz/d9f26cf2-31ba-43ea-a70f-0dd6d38f490a');
+>>>>>>> 0c53ffab0c88bccdd424490ab4b6ea0d425612c7
     return response.data;
   } catch (error) {
     console.error("Error:", error.message);
