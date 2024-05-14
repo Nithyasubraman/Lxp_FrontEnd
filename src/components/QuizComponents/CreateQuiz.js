@@ -3,8 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ImFolderUpload } from "react-icons/im";
 import { BiSolidCoinStack } from "react-icons/bi";
-import { BiSolidPencil } from "react-icons/bi";
+import { AiFillEdit } from "react-icons/ai";
 import { FaTrashCan } from "react-icons/fa6";
+import { FaUpload } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import AdminNavbar from './AdminNavbar';
 import axios from 'axios';
@@ -17,6 +18,7 @@ import { QuestionTemplate } from './QuestionTemplate';
 import { createquiz } from '../../middleware/api';
 import { GetAllQuestion } from '../../middleware/QuestionApi';
 import { GetQuizDetails } from '../../middleware/api';
+
 
 export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     const [showOptions, setShowOptions] = useState(false);
@@ -81,6 +83,9 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         return quizDetails.nameOfQuiz !== '' && quizDetails.duration !== '' && quizDetails.passMark !== '';
     };
 
+   
+    
+
     const handleQuizTitleChange = (e) => {
         const value = e.target.value;
         if (/^\d+$/.test(value)) {
@@ -90,6 +95,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             setQuizTitle(value);
         }
     };
+
+  
 
     const handleOpenAddQuestionModal = () => {
         setShowAddQuestionModal(true);
@@ -129,7 +136,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const handleSaveQuestion = () => {
         const requestBody = {
-            quizId: "3e2ac1a6-d882-4566-b229-7cdd516a3b24",
+            quizId: "44e6da44-1387-4e47-b097-637b8b24d69c",
             question: newQuestion.question,
             questionType: newQuestion.questionType,
             options: newQuestion.options.map((option, index) => ({
@@ -191,7 +198,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             passMark: parseInt(quizData.passMark)
         };
 
-        axios.put('https://localhost:7005/api/Quiz/e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6', updatedQuizData)
+        axios.put('https://localhost:7005/api/Quiz/44e6da44-1387-4e47-b097-637b8b24d69c', updatedQuizData)
             .then(response => {
                 console.log('Quiz updated successfully:', response.data);
             })
@@ -203,7 +210,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
     const handleDeleteQuiz = () => {
 
-        axios.delete('https://localhost:7005/api/Quiz/e256e8d7-2dc7-4bc9-a4c4-9eea0d3733b6')
+        axios.delete('https://localhost:7005/api/Quiz/44e6da44-1387-4e47-b097-637b8b24d69c')
             .then(response => {
                 console.log('Quiz deleted successfully:', response.data);
             })
@@ -263,8 +270,10 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                     <div className="card-body">
                         <div className="d-flex mt-2">
                             <div className="container">
-                                <a onClick={handleOpenQuizEditModal}><BiSolidPencil style={{ fontSize: "25", marginLeft: "90%" }} /></a>
-                                <a onClick={handleDeleteQuiz}><FaTrashCan style={{ fontSize: "23", marginLeft: "2%" }} /></a>
+                                {/* <a onClick={handleOpenQuizEditModal}><BiSolidPencil style={{ fontSize: "25", marginLeft: "90%" }} /></a> */}
+                                <Button class="btn btn-light" style={{marginLeft:"80%" , marginTop:"-3%" , backgroundColor:"#365486", color:"white"}} onClick={handleOpenQuizEditModal}><AiFillEdit/> Edit</Button>
+                                <Button class="btn btn-light" style={{marginLeft:"89%" , marginTop:"-8.5%", backgroundColor:"#365486", color:"white"}} onClick={handleDeleteQuiz}><FaTrashCan/> Delete</Button>
+                                {/* <a onClick={handleDeleteQuiz}><FaTrashCan style={{ fontSize: "23", marginLeft: "2%" }} /></a> */}
                                 <div className="form-group row mt-3">
                                     <label htmlFor="lbl1" className="col-sm-3 col-form-label" style={{ fontWeight: "bold" }} >Quiz Title<span id='required'>*</span></label>
                                     <div className="col-sm-8">
@@ -291,7 +300,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-sm-10">
-                                        <button type="submit" className="btn btn-primary" onClick={(e) => { handleUploadClick(e) }} style={{ marginLeft: "50%", marginTop: "3%", borderRadius: 8 }} disabled={!isFormValid()}>+ Add Questions</button>
+                                    {/* <Button class="btn btn-light" style={{marginLeft:"80%" , marginTop:"-3%" , backgroundColor:"#365486", color:"white"}} onClick={handleOpenQuizEditModal}><AiFillEdit/> Edit</Button> */}
+                                      <Button type="submit" className="btn btn-light" onClick={(e) => { handleUploadClick(e) }} style={{ marginLeft: "50%", marginTop: "3%", borderRadius: 8 , backgroundColor:"#365486", color:"white"}} disabled={!isFormValid()}><FaUpload/> Import Question</Button>
                                     </div>
                                 </div>
                             </div>
@@ -305,12 +315,12 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                 {error && <p>Error: {error}</p>}
                 {questions && questions.length > 0 && (
                     <div>
-                        <h3>Uploaded Questions</h3>
+                        <h5>Uploaded Questions</h5>
                         {questions.map((question, index) => (
                             <div key={index} className='card mt-3'>
                                 <div className='d-flex justify-content-end'>
-                                    <a onClick={() => { handleOpenEditQuestionModal(question.quizQuestionId) }} className='m-2 me-2'><BiSolidPencil style={{ fontSize: "25" }} /></a>
-                                    <a className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23" }} /></a>
+                                    <a onClick={() => { handleOpenEditQuestionModal(question.quizQuestionId) }} className='m-2 me-2'><AiFillEdit style={{fontSize:"30", color:"#365486"}} /></a>
+                                    <a className='m-2 ms-3'><FaTrashCan style={{fontSize:"23", color:"#365486"}}/></a>
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Question {question.questionNo}:</h5>
@@ -340,7 +350,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                                             />
                                         ))}
                                     </div>
-                                    <button onClick={handleOpenAddQuestionModal} className="btn btn-primary mt-3 mb-5 float-right">Add Question</button>
+                                    <button onClick={handleOpenAddQuestionModal} className="btn btn-light mt-3 mb-5 float-right" style={{backgroundColor:"#365486", color:"white"}}>Add More Question</button>
 
                                 </div>
 
@@ -354,31 +364,31 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             </div>
             <Modal show={showQuizEditModal} onHide={handleCloseQuizEditModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Quiz Editor</Modal.Title>
+                    <Modal.Title><h5>Quiz Editor</h5></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="container">
                         <div className="form-group row mt-3">
-                            <label htmlFor="lbl1" className="col-sm-3 col-form-label" style={{ fontWeight: "bold" }} >Quiz Title<span id='required'>*</span></label>
+                            <label htmlFor="lbl1" className="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Quiz Title<span id='required'>*</span></label>
                             <div className="col-sm-8">
                                 <input type="text" className="form-control" id="lbl1" placeholder="Enter the Quiz Title" style={{ borderRadius: 8 }} name='nameOfQuiz' value={quizData.nameOfQuiz} onChange={(e) => { handleQuizTitleChange(e); handleQuizChange(e) }} />
                                 {error && <p style={{ color: 'red', fontSize: "50" }}>{error}</p>}
                             </div>
                         </div>
                         <div class="form-group row mt-3">
-                            <label for="lbl3" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Duration (In Minutes)<span id='required'>*</span></label>
+                            <label for="lbl3" class="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Duration(In Minutes)<span id='required'>*</span></label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="lbl3" placeholder="Enter the Time Limit in Minutes" style={{ borderRadius: 8 }} name='duration' value={quizData.duration} onChange={(e) => { handleDurationChange(e); handleQuizChange(e) }}></input>
+                                <input type="number" class="form-control" id="lbl3" placeholder="Enter the Time Limit in Minutes" style={{ borderRadius: 8 }} name='duration' value={quizData.duration} onChange={(e) => { handleDurationChange(e); handleQuizChange(e) }}/>
                             </div>
                         </div>
                         <div class="form-group row mt-3">
-                            <label for="lbl5" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Grade to be Secured<span id='required'>*</span></label>
+                            <label for="lbl5" class="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Grade to be Secured<span id='required'>*</span></label>
                             <div class="col-sm-8">
                                 <input type="number" class="form-control" id="lbl5" placeholder="Enter the Minimum Score to be Passed" style={{ borderRadius: 8 }} name='passMark' value={quizData.passMark} onChange={(e) => { handleGradeChange(e); handleQuizChange(e) }}></input>
                             </div>
                         </div>
                         <div class="form-group row mt-3">
-                            <label for="lbl4" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Attempts Allowed<span id='required'>*</span></label>
+                            <label for="lbl4" class="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Attempts Allowed<span id='required'>*</span></label>
                             <div class="col-sm-8">
                                 <input type="text" className="form-control" id="lbl1" placeholder="Attempts Allowed" style={{ borderRadius: 8 }} name='attemptsAllowed' value={quizData.attemptsAllowed} onChange={(e) => { handleQuizChange(e) }} />
                             </div>
@@ -386,8 +396,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseQuizEditModal}>Close</Button>
-                    <Button variant="primary" onClick={handleUpdateQuiz}>Save</Button>
+                    <Button variant="secondary" onClick={handleCloseQuizEditModal}>Back</Button>
+                    <Button variant="primary" onClick={handleUpdateQuiz}>Update</Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={showEditQuestionModal} onHide={handleCloseEditQuestionModal}>
