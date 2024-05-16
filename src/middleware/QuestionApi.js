@@ -36,3 +36,44 @@ export const GetAllQuestion = () => async dispatch => {
       }
 
 };
+
+export const GetOpenEditQuestionModal = async(quizQuestionId) =>{
+  try {
+    const response = await axios.get(`https://localhost:7005/api/QuizQuestions/GetQuestionById?quizQuestionId=${quizQuestionId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error.message;
+  }
+}
+
+export const DeleteQuestion = async(quizQuestionId) =>{
+  try {
+    const response = await axios.delete(`https://localhost:7005/api/QuizQuestions/DeleteQuestion?quizQuestionId=${quizQuestionId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error.message;
+  }
+}
+
+export const UpdateQuestion = async(quizQuestionId, requestBody) =>{
+  console.log("update tequest body",requestBody)
+  try {
+    const response = await axios.put(`https://localhost:7005/api/QuizQuestions/UpdateQuestion?quizQuestionId=${quizQuestionId}`, requestBody)
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error.message;
+  }
+}
+
+export const PostSingleQuestion = async(requestBody) =>{
+  try {
+    const response = await axios.post('https://localhost:7005/api/QuizQuestions/AddQuestion', requestBody);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error.message;
+  }
+}

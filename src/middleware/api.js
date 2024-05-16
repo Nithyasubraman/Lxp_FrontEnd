@@ -22,6 +22,26 @@ export const GetQuizDetails = async() =>{
   }
 }
 
+export const PutQuizDetails = async(updatedQuizData) =>{
+  try{
+    const response = await axios.put('https://localhost:7005/api/Quiz/44e6da44-1387-4e47-b097-637b8b24d69c', updatedQuizData)
+    console.log("Quiz edited successful",response.data);
+  }catch (error) {
+    console.error("Error:", error.message);
+    throw error.message;
+  }
+}
+
+
+export const DeleteQuizDetails = async() =>{
+  try{
+    const response = await axios.delete('https://localhost:7005/api/Quiz/44e6da44-1387-4e47-b097-637b8b24d69c')
+    console.log("Quiz deleted successful",response.data);
+  }catch (error) {
+    console.error("Error:", error.message);
+    throw error.message;
+  }
+}
 // export const getQuizById = () => async dispatch => {
 //   dispatch(fetchQuizByIdRequest());
 //   try {

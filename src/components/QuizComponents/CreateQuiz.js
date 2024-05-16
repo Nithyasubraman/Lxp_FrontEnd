@@ -15,10 +15,12 @@ import { useEffect } from 'react';
 import '../../Styles/CreateQuiz.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { QuestionTemplate } from './QuestionTemplate';
-import { createquiz } from '../../middleware/api';
-import { GetAllQuestion } from '../../middleware/QuestionApi';
+import { DeleteQuizDetails, createquiz } from '../../middleware/api';
+import { DeleteQuestion, GetAllQuestion, GetOpenEditQuestionModal, PostSingleQuestion, UpdateQuestion } from '../../middleware/QuestionApi';
 // import { getQuizById } from '../../middleware/api';
 import { GetQuizDetails } from '../../middleware/api';
+import { setAttempts } from '../../actions/CreateQuizAction';
+import { PutQuizDetails } from '../../middleware/api';
 
 
 export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
@@ -27,7 +29,11 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     const [quizTitle, setQuizTitle] = useState('');
     const [duration, setDuration] = useState('');
     const [passMark, setPassMark] = useState('');
+    const [attemptsAllowed, setAttemptsAllowed] = useState('');
     const [error, setError] = useState('');
+    const [errorduration, setErrorDuration] = useState('');
+    const [errormark, setErrormark] = useState('');
+    const [errorattempts, setErrorAttempt] = useState('');
     const location = useLocation();
     const [selectedQuestionType, setSelectedQuestionType] = useState('');
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
@@ -81,7 +87,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     };
 
     const isFormValid = () => {
-        return quizDetails.nameOfQuiz !== '' && quizDetails.duration !== '' && quizDetails.passMark !== '';
+        return quizDetails.nameOfQuiz !== '' && quizDetails.duration !== '' && quizDetails.passMark !== '' && quizDetails.attemptsAllowed !== '' ;
     };
 
    
@@ -97,7 +103,52 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         }
     };
 
-  
+   
+    const handleInputChange = (event) => {
+        const value = parseInt(event.target.value);
+        // Check if the number is less than 30 or greater than 180
+        if (value < 30 || value > 180) {
+            setErrorDuration('Invalid range. Please enter a number between 30 and 180.');
+            setDuration(Math.min(Math.max(value, 30), 180)); // Set the duration to a value within the range 30-180
+        } 
+        // If the input is valid, clear the error message
+        else {
+            setErrorDuration('');
+            setDuration(value);
+        }
+    };
+    
+
+    const handlemarkChange = (event) => {
+        const value = parseInt(event.target.value);
+        // Check if the number is less than 60 or greater than 90
+        if (value < 60 || value > 90) {
+            setErrormark('Please enter a passmark between 60 and 90.');
+            setPassMark(Math.min(Math.max(value, 60), 90)); // Set the passmark to a value within the range 60-90
+        } 
+        // If the input is valid, clear the error message
+        else {
+            setErrormark('');
+            setPassMark(value);
+        }
+    };
+    
+    const handleattemptsChange = (event) => {
+        const value = parseInt(event.target.value);
+        // Check if the number is outside the range 1-5
+        if (value < 1 || value > 5) {
+            setErrorAttempt('Minimum Attempts Allowed is 5');
+            setAttemptsAllowed(Math.min(Math.max(value, 1), 5)); // Set the attempts to a value within the range 1-5
+        } 
+        // If the input is valid, clear the error message
+        else {
+            setErrorAttempt('');
+            
+        }
+        setAttemptsAllowed(value);
+    };
+    
+    
 
     const handleOpenAddQuestionModal = () => {
         setShowAddQuestionModal(true);
@@ -145,14 +196,9 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                 isCorrect: newQuestion.correctOptions.includes(option) // Check if option is in correctOptions array
             }))
         };
-        axios.post('https://localhost:7005/api/QuizQuestions/AddQuestion', requestBody)
-            .then(response => {
-                console.log('Question added successfully:', response.data);
-                handleCloseAddQuestionModal();
-            })
-            .catch(error => {
-                console.error('Error adding question:', error);
-            });
+
+        PostSingleQuestion(requestBody);
+        handleCloseAddQuestionModal();
     };
 
     const handleQuestionTypeChange = (e) => {
@@ -199,41 +245,34 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             passMark: parseInt(quizData.passMark)
         };
 
-        axios.put('https://localhost:7005/api/Quiz/44e6da44-1387-4e47-b097-637b8b24d69c', updatedQuizData)
-            .then(response => {
-                console.log('Quiz updated successfully:', response.data);
-            })
-            .catch(error => {
-                console.error('Error updating quiz:', error);
-            });
+        PutQuizDetails(updatedQuizData);
         handleCloseQuizEditModal();
     };
 
     const handleDeleteQuiz = () => {
-
-        axios.delete('https://localhost:7005/api/Quiz/44e6da44-1387-4e47-b097-637b8b24d69c')
-            .then(response => {
-                console.log('Quiz deleted successfully:', response.data);
-            })
-            .catch(error => {
-                console.error('Error updating quiz:', error);
-            });
+        DeleteQuizDetails();
     };
 
     const handleOpenEditQuestionModal = async (quizQuestionId) => {
         try {
-            const response = await axios.get(`https://localhost:7005/api/QuizQuestions/GetQuestionById?quizQuestionId=${quizQuestionId}`);
-            const questionData = response.data;
-            setEditedQuestion({
-                question: questionData.question,
-                options: questionData.options.map(option => option.option),
-                correctOptions: questionData.options.filter(option => option.isCorrect).map(option => option.option)
-            });
-
-            setShowEditQuestionModal(true);
+          const response = await GetOpenEditQuestionModal(quizQuestionId);
+          const questionData = response;
+          setEditedQuestion({
+            quizQuestionId: quizQuestionId, // Add quizQuestionId to the editedQuestion state
+            question: questionData.question,
+            questionType: questionData.questionType,
+            options: questionData.options.map(option => option.option),
+            correctOptions: questionData.options.filter(option => option.isCorrect).map(option => option.option)
+          });
+      
+          setShowEditQuestionModal(true);
         } catch (error) {
-            console.error('Error fetching question data:', error);
+          console.error('Error fetching question data:', error);
         }
+      };
+
+    const handleDeleteQuestion = (quizQuestionId) => {
+        DeleteQuestion(quizQuestionId);
     };
 
     const handleCloseEditQuestionModal = () => {
@@ -241,7 +280,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     };
 
     const handleUpdateQuestion = () => {
-        const { quizQuestionId, ...updatedQuestion } = editedQuestion;
+        const { quizQuestionId, questionType, ...updatedQuestion } = editedQuestion;
         const updatedOptions = updatedQuestion.options.map((option, index) => ({
           option,
           isCorrect: updatedQuestion.correctOptions.includes(option)
@@ -249,17 +288,12 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
       
         const requestBody = {
           ...updatedQuestion,
-          options: updatedOptions
+          options: updatedOptions,
+          questionType: questionType,
+          quizId: '44e6da44-1387-4e47-b097-637b8b24d69c'
         };
       
-        axios.put(`https://localhost:7005/api/QuizQuestions/UpdateQuestion/${quizQuestionId}`, requestBody)
-          .then(response => {
-            console.log('Question updated successfully:', response.data);
-            handleCloseEditQuestionModal();
-          })
-          .catch(error => {
-            console.error('Error updating question:', error);
-          });
+        UpdateQuestion(quizQuestionId, requestBody);
       };
 
     return (
@@ -296,7 +330,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                                 <div class="form-group row mt-3">
                                     <label for="lbl4" class="col-sm-3 col-form-label" style={{ fontWeight: "bold" }}>Attempts Allowed<span id='required'>*</span></label>
                                     <div class="col-sm-8">
-                                        <input type="text" className="form-control" id="lbl1" placeholder="Attempts Allowed" style={{ borderRadius: 8 }} name='attemptsAllowed' value={quizData.attemptsAllowed} readOnly />
+                                        <input type="number" className="form-control" id="lbl1" placeholder="Attempts Allowed" style={{ borderRadius: 8 }} name='attemptsAllowed' value={quizData.attemptsAllowed} readOnly />
                                     </div>
                                 </div>
                                 <div className="form-group row">
@@ -321,7 +355,9 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                             <div key={index} className='card mt-3'>
                                 <div className='d-flex justify-content-end'>
                                     <a onClick={() => { handleOpenEditQuestionModal(question.quizQuestionId) }} className='m-2 me-2'><AiFillEdit style={{fontSize:"30", color:"#365486"}} /></a>
-                                    <a className='m-2 ms-3'><FaTrashCan style={{fontSize:"23", color:"#365486"}}/></a>
+                                    <a onClick={()=>{handleDeleteQuestion(question.quizQuestionId)}} className='m-2 ms-3'><FaTrashCan style={{ fontSize: "23", color:"#365486" }} /></a>
+                                     {/* <Button class="btn btn-light" style={{marginLeft:"80%" , marginTop:"-3%" , backgroundColor:"#365486", color:"white"}} onClick={handleOpenQuizEditModal}><AiFillEdit/> Edit</Button>
+                                <Button class="btn btn-light" style={{marginLeft:"89%" , marginTop:"-8.5%", backgroundColor:"#365486", color:"white"}} onClick={handleDeleteQuiz}><FaTrashCan/> Delete</Button> */}
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Question {question.questionNo}:</h5>
@@ -379,19 +415,22 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                         <div class="form-group row mt-3">
                             <label for="lbl3" class="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Duration(In Minutes)<span id='required'>*</span></label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="lbl3" placeholder="Enter the Time Limit in Minutes" style={{ borderRadius: 8 }} name='duration' value={quizData.duration} onChange={(e) => { handleDurationChange(e); handleQuizChange(e) }}/>
+                                <input type="number" class="form-control" id="lbl3" placeholder="Enter the Time Limit in Minutes" style={{ borderRadius: 8 }} name='duration' value={quizData.duration} onChange={(e) => { handleDurationChange(e); handleQuizChange(e);handleInputChange(e) }}/>
+                                {errorduration && <p style={{ color: 'red', fontSize: "50" }}>{errorduration}</p>}
                             </div>
                         </div>
                         <div class="form-group row mt-3">
                             <label for="lbl5" class="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Grade to be Secured<span id='required'>*</span></label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="lbl5" placeholder="Enter the Minimum Score to be Passed" style={{ borderRadius: 8 }} name='passMark' value={quizData.passMark} onChange={(e) => { handleGradeChange(e); handleQuizChange(e) }}></input>
+                                <input type="number" class="form-control" id="lbl5" placeholder="Enter the Minimum Score to be Passed" style={{ borderRadius: 8 }} name='passMark' value={quizData.passMark} onChange={(e) => { handleGradeChange(e); handleQuizChange(e);handlemarkChange(e) }}></input>
+                                {errormark && <p style={{ color: 'red', fontSize: "50" }}>{errormark}</p>}
                             </div>
                         </div>
                         <div class="form-group row mt-3">
                             <label for="lbl4" class="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Attempts Allowed<span id='required'>*</span></label>
                             <div class="col-sm-8">
-                                <input type="text" className="form-control" id="lbl1" placeholder="Attempts Allowed" style={{ borderRadius: 8 }} name='attemptsAllowed' value={quizData.attemptsAllowed} onChange={(e) => { handleQuizChange(e) }} />
+                                <input type="number" className="form-control" id="lbl1" placeholder="Attempts Allowed" style={{ borderRadius: 8 }} name='attemptsAllowed' value={quizData.attemptsAllowed} onChange={(e) => { handleQuizChange(e);handleattemptsChange(e) }} />
+                                {errorattempts && <p style={{ color: 'red', fontSize: "50" }}>{errorattempts}</p>}
                             </div>
                         </div>
                     </div>
