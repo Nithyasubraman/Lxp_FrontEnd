@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import QuizEditorView from './View/QuizEditorView';
 import CreateQuizView from './View/CreateQuizView';
 import QuizEditor from './components/QuizEditor';
@@ -8,19 +8,24 @@ import { Provider } from 'react-redux';
 // import store from './store/configureStore'; 
 import store from './Store/fileConfigureStore';
 import UploadBulkQuiz from './components/QuizComponents/UploadBulkQuiz';
+import CoursePage from "./components/QuizComponents/CoursePage";
 import './App.css'
-import './Styles/CreateQuiz.css'
+import './styles/CoursePage.css'
+import './styles/CreateQuiz.css'
 import QuestionTemplateView from './View/QuestionTemplateView';
+
 function App() {
   return (
       <Routes>
         <Route path="/quiz" element={<QuizEditor />} />
+        <Route path="/course" element={<CoursePage/>}/>
         <Route path="/" element={<CreateQuizView/>}/>  
         <Route path='/questiontemplate' element={<QuestionTemplateView/>}/>
         <Route path='/upload' element={
           <Provider store={store}>
             <div>
               <UploadBulkQuiz />
+      
             </div>
           </Provider>
         } />

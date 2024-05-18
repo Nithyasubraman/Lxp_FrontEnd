@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom'; 
-import '../../Styles/UploadBulkQuiz.css'
+import '../../styles/UploadBulkQuiz.css'
 import AdminNavbar from '../AdminNavbar';
 import axios from 'axios'; 
 import { BulkUploadQuestion } from '../../middleware/QuestionApi';
