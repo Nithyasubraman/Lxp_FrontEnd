@@ -9,7 +9,7 @@ export const BulkUploadQuestion = async (files) => {
       formData.append('file', file);
   
       try {
-        const response = await axios.post('https://localhost:7005/api/BulkQuestion/ImportQuizData', formData, {
+        const response = await axios.post('http://localhost:5199/api/BulkQuestion/ImportQuizData', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -28,7 +28,7 @@ export const BulkUploadQuestion = async (files) => {
 export const GetAllQuestion = () => async dispatch => {
   dispatch(fetchQuestionsRequest());
       try {
-        const response = await axios.get('https://localhost:7005/api/QuizQuestions/GetAllQuestions');
+        const response = await axios.get('http://localhost:5199/api/QuizQuestions/GetAllQuestions');
         dispatch(fetchQuestionsSuccess(response.data));
       } catch (error) {
         dispatch(fetchQuestionsFailure(error.message))
@@ -39,7 +39,7 @@ export const GetAllQuestion = () => async dispatch => {
 
 export const GetOpenEditQuestionModal = async(quizQuestionId) =>{
   try {
-    const response = await axios.get(`https://localhost:7005/api/QuizQuestions/GetQuestionById?quizQuestionId=${quizQuestionId}`);
+    const response = await axios.get(`http://localhost:5199/api/QuizQuestions/GetQuestionById?quizQuestionId=${quizQuestionId}`);
     return response.data;
   } catch (error) {
     console.error("Error:", error.message);
@@ -49,7 +49,7 @@ export const GetOpenEditQuestionModal = async(quizQuestionId) =>{
 
 export const DeleteQuestion = async(quizQuestionId) =>{
   try {
-    const response = await axios.delete(`https://localhost:7005/api/QuizQuestions/DeleteQuestion?quizQuestionId=${quizQuestionId}`);
+    const response = await axios.delete(`http://localhost:5199/api/QuizQuestions/DeleteQuestion?quizQuestionId=${quizQuestionId}`);
     return response.data;
   } catch (error) {
     console.error("Error:", error.message);
@@ -60,7 +60,7 @@ export const DeleteQuestion = async(quizQuestionId) =>{
 export const UpdateQuestion = async(quizQuestionId, requestBody) =>{
   console.log("update tequest body",requestBody)
   try {
-    const response = await axios.put(`https://localhost:7005/api/QuizQuestions/UpdateQuestion?quizQuestionId=${quizQuestionId}`, requestBody)
+    const response = await axios.put(`http://localhost:5199/api/QuizQuestions/UpdateQuestion?quizQuestionId=${quizQuestionId}`, requestBody)
     return response.data;
   } catch (error) {
     console.error("Error:", error.message);
@@ -70,7 +70,7 @@ export const UpdateQuestion = async(quizQuestionId, requestBody) =>{
 
 export const PostSingleQuestion = async(requestBody) =>{
   try {
-    const response = await axios.post('https://localhost:7005/api/QuizQuestions/AddQuestion', requestBody);
+    const response = await axios.post('http://localhost:5199/api/QuizQuestions/AddQuestion', requestBody);
     return response.data;
   } catch (error) {
     console.error("Error:", error.message);

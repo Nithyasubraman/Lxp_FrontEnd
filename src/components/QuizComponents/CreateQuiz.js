@@ -8,6 +8,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { FaUpload } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import AdminNavbar from './AdminNavbar';
+import * as yup from 'yup';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -21,6 +22,7 @@ import { DeleteQuestion, GetAllQuestion, GetOpenEditQuestionModal, PostSingleQue
 import { GetQuizDetails } from '../../middleware/api';
 import { setAttempts } from '../../actions/CreateQuizAction';
 import { PutQuizDetails } from '../../middleware/api';
+import { useNavigate } from 'react-router-dom';
 
 
 export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
@@ -34,8 +36,15 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     const [errorduration, setErrorDuration] = useState('');
     const [errormark, setErrormark] = useState('');
     const [errorattempts, setErrorAttempt] = useState('');
+    // const [newQuestion, setNewQuestion] = useState({ question: '', questionType: '', options: [] });
+    const [errors, setErrors] = useState({ question: '', questionType: '', options: '' , correctOptions: '' });
+    // const [errorIndividualquestion, setErrorIndividualQuestion] = useState("");
+    const [allquestions, setAllQuestions] = useState([]);
     const location = useLocation();
+
     const [selectedQuestionType, setSelectedQuestionType] = useState('');
+    const [options, setOptions] = useState(['']);
+
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
     const [showQuizEditModal, setShowQuizEditModal] = useState(false);
     const [newQuestion, setNewQuestion] = useState({
@@ -57,12 +66,15 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         attemptsAllowed: ''
     });
 
+
     const [showEditQuestionModal, setShowEditQuestionModal] = useState(false);
     const [editedQuestion, setEditedQuestion] = useState({
         question: '',
         options: ['', '', '', '', '', '', '', ''],
         correctOptions: ['', '', '']
     });
+ 
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -148,9 +160,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         setAttemptsAllowed(value);
     };
     
-    
 
-    const handleOpenAddQuestionModal = () => {
+    const handleOpenAddQuestionModal = () => {  
         setShowAddQuestionModal(true);
     };
 
@@ -166,8 +177,49 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         setShowQuizEditModal(true);
     }
 
-    const handleChange = (index, field, value) => {
 
+        
+  const handleChanges = (index, value) => {
+    // const updatedOptions = [...newQuestion.options];
+    // updatedOptions[index] = value;
+    // setNewQuestion({ ...newQuestion, options: updatedOptions });
+    const updatedOptions = [...newQuestion.options];
+    updatedOptions[index] = value;
+    setNewQuestion({ ...newQuestion, options: updatedOptions });
+  };
+
+  const handleAddOption = () => {
+    // setOptions([...options, '']);
+    // setNewQuestion({ ...newQuestion, options: [...newQuestion.options, ''] });
+    setNewQuestion({ ...newQuestion, options: [...newQuestion.options, ''] });
+  };
+
+  const validateOptions = () => {
+    for (let option of options) {
+      if (!option) {
+        setErrors({ options: 'Option cannot be empty' });
+        return false;
+      }
+    }
+    setErrors({});
+    return true;
+  };
+
+//   // Call this function when the form is submitted
+//   const handleSubmit = () => {
+//     if (validateOptions()) {
+//       console.log('Form is valid, submit the data');
+//     }
+//   };
+
+    const handleChange = (index, field, value) => {
+        // const updatedCorrectOptions = [...newQuestion.correctOptions];
+        // updatedCorrectOptions[index] = value;
+        // setNewQuestion({ ...newQuestion, correctOptions: updatedCorrectOptions });
+        const updatedCorrectOptions = [...newQuestion.correctOptions];
+    updatedCorrectOptions[index] = value;
+    setNewQuestion({ ...newQuestion, correctOptions: updatedCorrectOptions });
+        
         if (field === 'correctOptions') {
             setNewQuestion(prevState => ({
                 ...prevState,
@@ -186,9 +238,65 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         setQuizData({ ...quizData, [e.target.name]: e.target.value })
     };
 
+    // const handleSaveQuestion = () => {
+    //     const requestBody = {
+    //         quizId: "d609ff3e-5972-4340-97e0-7f46b55e8096",
+    //         question: newQuestion.question,
+    //         questionType: newQuestion.questionType,
+    //         options: newQuestion.options.map((option, index) => ({
+    //             option: option,
+    //             isCorrect: newQuestion.correctOptions.includes(option) // Check if option is in correctOptions array
+    //         }))
+    //     };
+
+    //     PostSingleQuestion(requestBody);
+    //     handleCloseAddQuestionModal();
+    // };
+  
+
+    // const handleSaveQuestion = () => {
+    //     if (!newQuestion.question || !newQuestion.questionType || newQuestion.options.length === 0) {
+    //         alert("All fields are required!");
+    //         return;
+    //     }
+    
+    //     const requestBody = {
+    //         quizId: "d609ff3e-5972-4340-97e0-7f46b55e8096",
+    //         question: newQuestion.question,
+    //         questionType: newQuestion.questionType,
+    //         options: newQuestion.options.map((option, index) => ({
+    //             option: option,
+    //             isCorrect: newQuestion.correctOptions.includes(option) // Check if option is in correctOptions array
+    //         }))
+    //     };
+    
+    //     PostSingleQuestion(requestBody);
+    //     handleCloseAddQuestionModal();
+    // };
     const handleSaveQuestion = () => {
+        let tempErrors = { question: '', questionType: '', options: '', correctOptions: '' };
+
+        if (!newQuestion.question) {
+            tempErrors.question = 'Question is required';
+        }
+        if (!newQuestion.questionType) {
+            tempErrors.questionType = 'Question type is required';
+        }
+        if (newQuestion.options.length === 0) {
+            tempErrors.options = 'At least one option is required';
+        }
+        if (!newQuestion.correctOptions) {
+            tempErrors.correctOptions = 'Correct Option is required';
+        }
+
+        setErrors(tempErrors);
+
+        if (tempErrors.question || tempErrors.questionType || tempErrors.options || tempErrors.correctOptions) {
+            return;
+        }
+
         const requestBody = {
-            quizId: "44e6da44-1387-4e47-b097-637b8b24d69c",
+            quizId: "d609ff3e-5972-4340-97e0-7f46b55e8096",
             question: newQuestion.question,
             questionType: newQuestion.questionType,
             options: newQuestion.options.map((option, index) => ({
@@ -200,7 +308,6 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         PostSingleQuestion(requestBody);
         handleCloseAddQuestionModal();
     };
-
     const handleQuestionTypeChange = (e) => {
         const value = e.target.value;
         setSelectedQuestionType(value);
@@ -211,6 +318,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             correctOptions: []
         }));
     };
+   
+    
 
     const handleDurationChange = (e) => {
         setDuration('SET_DURATION', e.target.value);
@@ -229,6 +338,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         }
     }
 
+
     const fetchQuestions = async () => {
         try {
             await GetAllQuestion();
@@ -236,6 +346,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             console.error('Error fetching data:', error)
         }
     }
+
 
     const handleUpdateQuiz = () => {
         const updatedQuizData = {
@@ -278,6 +389,19 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     const handleCloseEditQuestionModal = () => {
         setShowEditQuestionModal(false);
     };
+    
+    const handleSubmit = () => {
+          try {
+                // await GetAllQuestion();
+            navigate('/reviewquestions')
+                
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        
+    };
+    
+
 
     const handleUpdateQuestion = () => {
         const { quizQuestionId, questionType, ...updatedQuestion } = editedQuestion;
@@ -290,7 +414,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
           ...updatedQuestion,
           options: updatedOptions,
           questionType: questionType,
-          quizId: '44e6da44-1387-4e47-b097-637b8b24d69c'
+          quizId: 'd609ff3e-5972-4340-97e0-7f46b55e8096'
         };
       
         UpdateQuestion(quizQuestionId, requestBody);
@@ -394,11 +518,13 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                             </div>
 
                         ))}
+                                <button onClick={handleSubmit} className="btn btn-light mt-3 mb-5 float-left" style={{backgroundColor:"#365486", color:"white",marginLeft:"92%"}}>Proceed</button>
 
                     </div>
                 )}
 
             </div>
+           
             <Modal show={showQuizEditModal} onHide={handleCloseQuizEditModal}>
                 <Modal.Header closeButton>
                     <Modal.Title><h5>Quiz Editor</h5></Modal.Title>
@@ -481,6 +607,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                     <Button variant="primary" onClick={handleUpdateQuestion}>Save Changes</Button>
                 </Modal.Footer>
             </Modal>
+
+{/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------   */}
             <Modal show={showAddQuestionModal} onHide={handleCloseAddQuestionModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add New Question</Modal.Title>
@@ -494,6 +622,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                             <option value="MCQ">Multiple Choice Question (MCQ)</option>
                             <option value="T/F">True/False (T/F)</option>
                         </select>
+                        {errors.questionType && <div style={{color: "red"}}>{errors.questionType}</div>}
                     </div>
 
                     {selectedQuestionType === 'MSQ' && (
@@ -501,19 +630,73 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                             <div className="form-group">
                                 <label>Question:</label>
                                 <input className='form-control' type="text" value={newQuestion.question} onChange={(e) => handleChange(-1, 'question', e.target.value)} />
+                                {errors.question && <div style={{color: "red"}}>{errors.question}</div>}   
                             </div>
-                            {[...Array(8)].map((_, index) => (
-                                <div className="form-group" key={index}>
-                                    <label>Option {index + 1}:</label>
-                                    <input className='form-control' type="text" value={newQuestion.options[index] || ''} onChange={(e) => handleChange(index, 'options', e.target.value)} />
-                                </div>
-                            ))}
-                            {[...Array(3)].map((_, index) => (
-                                <div className="form-group" key={index}>
-                                    <label>Correct Option {index + 1}:</label>
-                                    <input className='form-control' type="text" value={newQuestion.correctOptions[index] || ''} onChange={(e) => handleChange(index, 'correctOptions', e.target.value)} />
-                                </div>
-                            ))}
+                            <div>
+      {newQuestion.options.map((option, index) => (
+        <div className="form-group" key={index}>
+          <label>Option {index + 1}:</label>
+          <input
+            className='form-control'
+            type="text"
+            value={option}
+            onChange={(e) => handleChanges(index, e.target.value)}
+          />
+          {errors.options && <div style={{color: "red"}}>{errors.options}</div>}
+        </div>
+      ))}
+      <button onClick={handleAddOption}>Add Option</button>
+
+      {[...Array(3)].map((_, index) => (
+        <div className="form-group" key={index}>
+          <label>Correct Option {index + 1}:</label>
+          <select
+            className='form-control'
+            value={newQuestion.correctOptions[index] || ''}
+            onChange={(e) => handleChange(index, 'correctOptions', e.target.value)}
+          >
+            <option value="">Select Correct Option</option>
+            {newQuestion.options.map((option, optionIndex) => (
+              <option key={optionIndex} value={option}>{option}</option>
+            ))}
+          </select>
+          {errors.correctOptions && <div style={{color: "red"}}>{errors.correctOptions}</div>}
+        </div>
+      ))}
+    </div>
+                            {/* <div>
+                    
+      {newQuestion.options.map((option, index) => (
+        <div className="form-group" key={index}>
+          <label>Option {index + 1}:</label>
+          <input
+            className='form-control'
+            type="text"
+            value={option}
+            onChange={(e) => handleChanges(index, e.target.value)}
+          />
+          {errors.options && <div style={{color: "red"}}>{errors.options}</div>}
+        </div>
+      ))}
+      <button onClick={handleAddOption}>Add More Options</button>
+
+      {[...Array(3)].map((_, index) => (
+        <div className="form-group" key={index}>
+          <label>Correct Option {index + 1}:</label>
+          <select
+            className='form-control'
+            value={newQuestion.correctOptions[index] || ''}
+            onChange={(e) => handleChange(index, 'correctOptions', e.target.value)}
+          >
+            <option value="">Select Correct Option</option>
+            {newQuestion.options.map((option, optionIndex) => (
+              <option key={optionIndex} value={option}>{option}</option>
+            ))}
+          </select>
+          {errors.correctOptions && <div style={{color: "red"}}>{errors.correctOptions}</div>}
+        </div>
+      ))}
+    </div> */}
                         </>
                     )}
                     {selectedQuestionType === 'MCQ' && (
@@ -521,17 +704,30 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                             <div className="form-group">
                                 <label>Question:</label>
                                 <input className='form-control' type="text" value={newQuestion.question} onChange={(e) => handleChange(-1, 'question', e.target.value)} />
+                                {errors.question && <div style={{color: "red"}}>{errors.question}</div>}
                             </div>
                             {[...Array(4)].map((_, index) => (
                                 <div className="form-group" key={index}>
                                     <label>Option {index + 1}:</label>
                                     <input className='form-control' type="text" value={newQuestion.options[index] || ''} onChange={(e) => handleChange(index, 'options', e.target.value)} />
+                                    {errors.options && <div style={{color: "red"}}>{errors.options}</div>}
                                 </div>
                             ))}
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label>Correct Option:</label>
                                 <input className='form-control' type="text" value={newQuestion.correctOptions[0] || ''} onChange={(e) => handleChange(0, 'correctOptions', e.target.value)} />
-                            </div>
+                                {errors.correctOptions && <div style={{color: "red"}}>{errors.correctOptions}</div>}
+                            </div> */}
+                             <div className="form-group">
+                            <label>Correct Option:</label>
+                            <select className='form-control' value={newQuestion.correctOptions[0] || ''} onChange={(e) => handleChange(0, 'correctOptions', e.target.value)}>
+                            <option value="">Select Correct Option</option>
+                            {newQuestion.options.map((option, index) => (
+                          <option key={index} value={option}>{option}</option>
+                                ))}
+                              </select>
+                              {errors.correctOptions && <div style={{color: "red"}}>{errors.correctOptions}</div>}
+                              </div>
                         </>
                     )}
                     {selectedQuestionType === 'T/F' && (
@@ -539,26 +735,44 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                             <div className="form-group">
                                 <label>Question:</label>
                                 <input className='form-control' type="text" value={newQuestion.question} onChange={(e) => handleChange(-1, 'question', e.target.value)} />
+                                {errors.question && <div style={{color: "red"}}>{errors.question}</div>}
                             </div>
                             {[...Array(2)].map((_, index) => (
                                 <div className="form-group" key={index}>
                                     <label>Option {index + 1}:</label>
                                     <input className='form-control' type="text" value={newQuestion.options[index] || ''} onChange={(e) => handleChange(index, 'options', e.target.value)} />
+                                    {errors.options && <div style={{color: "red"}}>{errors.options}</div>}
                                 </div>
                             ))}
-                            <div className="form-group">
+
+                            {/* <div className="form-group">
                                 <label>Correct Option:</label>
                                 <input className='form-control' type="text" value={newQuestion.correctOptions[0] || ''} onChange={(e) => handleChange(0, 'correctOptions', e.target.value)} />
-                            </div>
+                            </div> */}
+                            <div className="form-group">
+                            <label>Correct Option:</label>
+                            {errors.correctOptions && <div style={{color: "red"}}>{errors.correctOptions}</div>}
+                            <select className='form-control' value={newQuestion.correctOptions[0] || ''} onChange={(e) => handleChange(0, 'correctOptions', e.target.value)}>
+                            <option value="">Select Correct Option</option>
+                            {newQuestion.options.map((option, index) => (
+                          <option key={index} value={option}>{option}</option>
+                                ))}
+                        
+                              </select>
+                              </div>
+
+
                         </>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseAddQuestionModal}>Close</Button>
-                    <Button variant="primary" onClick={handleSaveQuestion}>Save</Button>
+                    <Button variant="primary" onClick={()=>{handleSaveQuestion()}}>Save</Button>
+               
                 </Modal.Footer>
             </Modal>
-
+{/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
+           
             <Modal show={showModal} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title id='questitle'>Question Library</Modal.Title>

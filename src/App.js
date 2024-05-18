@@ -11,12 +11,16 @@ import UploadBulkQuiz from './components/QuizComponents/UploadBulkQuiz';
 import './App.css'
 import './Styles/CreateQuiz.css'
 import QuestionTemplateView from './View/QuestionTemplateView';
+import ReviewQuestions from './components/QuizComponents/ReviewQuestions';
+import QuizNavbar from './components/QuizComponents/QuizNavbar';
 function App() {
   return (
       <Routes>
         <Route path="/quiz" element={<QuizEditor />} />
         <Route path="/" element={<CreateQuizView/>}/>  
         <Route path='/questiontemplate' element={<QuestionTemplateView/>}/>
+        <Route path='/reviewquestions' element={<ReviewQuestions/>}/>
+        <Route path='/quiznavbar' element={<QuizNavbar/>}/>
         <Route path='/upload' element={
           <Provider store={store}>
             <div>
