@@ -14,6 +14,7 @@ import './styles/CoursePage.css'
 import './styles/CreateQuiz.css'
 import QuestionTemplateView from './View/QuestionTemplateView';
 
+
 function App() {
   return (
       <Routes>
@@ -29,6 +30,8 @@ function App() {
             </div>
           </Provider>
         } />
+
+
       </Routes>
   )};
 export default App;

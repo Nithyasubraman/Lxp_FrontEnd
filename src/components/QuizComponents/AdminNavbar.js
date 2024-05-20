@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext} from 'react'
 import Relevantz from '../../assets/images/Relevantz.png'
 import { Image } from 'react-bootstrap';
 import { FaBars} from "react-icons/fa6";
@@ -9,11 +9,14 @@ import { IoMdAddCircle } from "react-icons/io";
 import { Link } from 'react-router-dom';
 // import '../../Styles/Navbar.css';
 
+
+
 function AdminNavbar() {
     const [showSideNav, setShowSideNav] = useState(false);
     // const [activePage, setActivePage] = useState('home');
-    const [searchTerm, setSearchTerm] = React.useState('');
-  
+    // const [searchTerm, setSearchTerm] = React.useState('');
+   
+
     const handlePageChange = () => {
         // setActivePage(page);
         if (!showSideNav) {
@@ -21,9 +24,9 @@ function AdminNavbar() {
         }
 
     };
-    const handleChange = e => {
-        setSearchTerm(e.target.value);
-    };
+    // const handleChange = e => {
+    //     setSearchTerm(e.target.value);
+    // };
     const toggleSideNav = () => {
         setShowSideNav(!showSideNav);
     };
@@ -39,13 +42,12 @@ function AdminNavbar() {
 
                 <div className="user-info">
                     <FaSearch className='search-icon' />
-                    <input
-                        onChange={handleChange}
+                    {/* <input
                         type="search"
                         placeholder="Search..."
-                        value={searchTerm}
                         className='search-box'
-                    />
+                        
+                    /> */}
 
                 </div>
 

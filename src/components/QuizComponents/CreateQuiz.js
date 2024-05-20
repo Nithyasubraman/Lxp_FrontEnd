@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useContext} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ImFolderUpload } from "react-icons/im";
@@ -22,9 +22,12 @@ import { GetQuizDetails } from '../../middleware/api';
 import { PutQuizDetails } from '../../middleware/api';
 import Alert from '@mui/material/Alert';
 import BasicPagination from '../../components/QuizComponents/Pagination';
+   
 
 
 export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
+
+    const [searchTerm, setSearchTerm] = useState(''); 
 
     const [currentPage, setCurrentPage] = useState(1);
     const questionsPerPage = 5;
@@ -309,16 +312,37 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         setCurrentPage(value);
     };
 
+    const searchFilteredQuestions = questions.filter(question =>
+        question.question.toLowerCase().includes(searchTerm) &&
+        (!selectedQuestionType || question.questionType === selectedQuestionType)
+      );
+
     // Calculate the questions to display on the current page
     const indexOfLastQuestion = currentPage * questionsPerPage;
     const indexOfFirstQuestion = indexOfLastQuestion - questionsPerPage;
-    const currentQuestions = filteredQuestions.slice(indexOfFirstQuestion, indexOfLastQuestion);
+    // const currentQuestions = filteredQuestions.slice(indexOfFirstQuestion, indexOfLastQuestion);
+    const currentQuestions = searchFilteredQuestions.slice(indexOfFirstQuestion, indexOfLastQuestion);
 
-
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value.toLowerCase());
+      };
+      
+    
+   
+  
     return (
         <div >
-
+            
+          
             <AdminNavbar />
+
+            <input id='search'
+                        type="search"
+                        placeholder="Search..."
+                        className='search-box'
+                        onChange={handleSearchChange}
+                        
+                    />
 
             <form className=' main-content'>
                 <div className="card" id="QuizCard">
@@ -381,7 +405,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
             <div className='question template container'>
                 {loading && <p>Loading...</p>}
                 {error && <p>Error: {error}</p>}
-                {questions && questions.length > 0 && (
+                {/* {questions && questions.length > 0 && ( */}
+                {currentQuestions.length > 0 ? (
                     <div style={{ marginTop: "-20%", marginLeft: "15%" }}>
                         <h5>Uploaded Questions</h5>
                         <div style={{ marginTop: "-6px", marginLeft: "68.5%" }}>
@@ -450,18 +475,20 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                         ))}
 
                     </div>
+                    ) : (
+                        <p>No questions match your search.</p>
                 )}
 
             </div>
             {/* DeleteQuiz */}
             <Modal show={showQuizDeleteModal} onHide={handleCloseQuizDeleteModal}>
-                <Modal.Header closeButton>
+                <Modal.Header  style={{backgroundColor:"#23275c" , color:"whitesmoke"}}>
                     <Modal.Title><h5>Deleting the Quiz</h5></Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <div className="container">
                         <div className="form-group row mt-3">
-                            <label htmlFor="lbl1" className="col-sm-10 col-form-label" style={{ fontWeight: "bold" }}>To confirm, deleting type the QuizTitle "{quizData.nameOfQuiz}"in the Input</label>
+                            <label htmlFor="lbl1" className="col-sm-10 col-form-label" style={{ fontWeight: "bold" }}>To confirm, deleting type the QuizTitle "{quizData.nameOfQuiz}"in the Input<span id='required'>*</span></label>
                             <div className="col-sm-10">
                                 <input type="text" className="form-control" id="lbl1" placeholder="Enter the Quiz Title" style={{ borderRadius: 8 }} onChange={handleQuizTitle} />
                                 {errordeletequiz && <p style={{ color: 'red', fontSize: "50" }}>{errordeletequiz}</p>}
@@ -469,7 +496,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                         </div>
                     </div>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <Button variant="secondary" onClick={handleCloseQuizDeleteModal}>Back</Button>
                     <Button variant="danger" onClick={handleDeleteQuiz}>Delete</Button>
                 </Modal.Footer>
@@ -477,10 +504,10 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
 
             {/* EditQuiz */}
             <Modal show={showQuizEditModal} onHide={handleCloseQuizEditModal}>
-                <Modal.Header closeButton>
+                <Modal.Header closeButton style={{backgroundColor:"#23275c" ,color:"whitesmoke"}}>
                     <Modal.Title><h5>Quiz Editor</h5></Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <div className="container">
                         <div className="form-group row mt-3">
                             <label htmlFor="lbl1" className="col-sm-5 col-form-label" style={{ fontWeight: "bold" }}>Quiz Title<span id='required'>*</span></label>
@@ -512,17 +539,17 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                         </div>
                     </div>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <Button variant="secondary" onClick={handleCloseQuizEditModal}>Back</Button>
                     <Button variant="primary" onClick={handleUpdateQuiz}>Update</Button>
                 </Modal.Footer>
             </Modal>
 
             <Modal show={showEditQuestionModal} onHide={handleCloseEditQuestionModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Question</Modal.Title>
+                <Modal.Header closeButton  style={{backgroundColor:"#23275c" ,color:"whitesmoke"}}>
+                    <Modal.Title><h5>Edit Question</h5></Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <div className="form-group">
                         <label>Question:</label>
                         <input className='form-control' type="text" value={editedQuestion.question} onChange={(e) => setEditedQuestion({ ...editedQuestion, question: e.target.value })} />
@@ -554,17 +581,17 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                         ))}
                     </div>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <Button variant="secondary" onClick={handleCloseEditQuestionModal}>Close</Button>
                     <Button variant="primary" onClick={handleUpdateQuestion}>Save Changes</Button>
                 </Modal.Footer>
             </Modal>
-
+           {/* AddSingleQuestion */}
             <Modal show={showAddQuestionModal} onHide={handleCloseAddQuestionModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add New Question</Modal.Title>
+                <Modal.Header closeButton style={{backgroundColor:"#23275c" ,color:"whitesmoke"}}>
+                    <Modal.Title><h5>Add New Question</h5></Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <div className="form-group">
                         <label>Question Type:</label>
                         <select className='form-control' value={selectedQuestionType} onChange={handleQuestionTypeChange}>
@@ -632,7 +659,7 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
                         </>
                     )}
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: "rgb(237, 231, 231)" }}>
                     <Button variant="secondary" onClick={handleCloseAddQuestionModal}>Close</Button>
                     <Button variant="primary" onClick={handleSaveQuestion}>Save</Button>
                 </Modal.Footer>
