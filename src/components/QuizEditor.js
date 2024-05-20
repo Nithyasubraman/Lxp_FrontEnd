@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
 import { PencilSquare, TrashFill, Check2Square } from 'react-bootstrap-icons';
-import jsonData from '../data/data.json';
 import AdminNavbar from '../components/AdminNavbar';
 import '../Styles/QuizEditor.css';
 
@@ -9,9 +8,9 @@ const QuizEditor = () => {
   const [questions, setQuestions] = useState([]);
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    setQuestions(jsonData);
-  }, []);
+  // useEffect(() => {
+  //   setQuestions(jsonData);
+  // }, []);
 
   const handleEditQuestion = (questionId, newText) => {
     const updatedQuestions = questions.map(question =>

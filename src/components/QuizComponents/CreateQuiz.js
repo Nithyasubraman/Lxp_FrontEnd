@@ -238,6 +238,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         setQuizData({ ...quizData, [e.target.name]: e.target.value })
     };
 
+    
+
     // const handleSaveQuestion = () => {
     //     const requestBody = {
     //         quizId: "d609ff3e-5972-4340-97e0-7f46b55e8096",
@@ -420,6 +422,8 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
         UpdateQuestion(quizQuestionId, requestBody);
       };
 
+
+      
     return (
         <div >
 
@@ -789,6 +793,11 @@ export const Home = ({ questions, loading, GetAllQuestion, editQuiz }) => {
     );
 };
 
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const mapStateToProps = state => {
     return {
         questions: state.questions.questions,
