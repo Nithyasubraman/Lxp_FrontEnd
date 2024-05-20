@@ -1,3 +1,180 @@
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
+import { PencilSquare, TrashFill, Check2Square } from 'react-bootstrap-icons';
+import AdminNavbar from '../components/AdminNavbar';
+import '../Styles/QuizEditor.css';
+
+const QuizEditor = () => {
+  const [questions, setQuestions] = useState([]);
+  const [errors, setErrors] = useState({});
+
+  // useEffect(() => {
+  //   setQuestions(jsonData);
+  // }, []);
+
+  const handleEditQuestion = (questionId, newText) => {
+    const updatedQuestions = questions.map(question =>
+      question.id === questionId ? { ...question, text: newText } : question
+    );
+    setQuestions(updatedQuestions);
+    validateQuestions(updatedQuestions);
+  };
+
+  const handleEditOption = (questionId, optionId, newText) => {
+    const updatedQuestions = questions.map(question =>
+      question.id === questionId
+        ? {
+            ...question,
+            options: question.options.map(option =>
+              option.id === optionId ? { ...option, text: newText } : option
+            ),
+          }
+        : question
+    );
+    setQuestions(updatedQuestions);
+    validateQuestions(updatedQuestions);
+  };
+
+  const handleDeleteQuestion = questionId => {
+    const updatedQuestions = questions.filter(question => question.id !== questionId);
+    setQuestions(updatedQuestions);
+    validateQuestions(updatedQuestions);
+  };
+
+  const handleEditCorrectAnswer = (questionId, newAnswer) => {
+    const updatedQuestions = questions.map(question =>
+      question.id === questionId ? { ...question, correctAnswer: newAnswer } : question
+    );
+    setQuestions(updatedQuestions);
+    validateQuestions(updatedQuestions);
+  };
+
+  const handleToggleEdit = questionId => {
+    const updatedQuestions = questions.map(question =>
+      question.id === questionId ? { ...question, isEditing: !question.isEditing } : question
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const handleAddQuestion = () => {
+    const newQuestion = {
+      id: questions.length + 1,
+      text: `Question ${questions.length + 1}`,
+      options: [
+        { id: 1, text: 'Option A' },
+        { id: 2, text: 'Option B' },
+        { id: 3, text: 'Option C' },
+        { id: 4, text: 'Option D' },
+      ],
+      correctAnswer: 'Option A',
+      isEditing: true,
+    };
+    const updatedQuestions = [...questions, newQuestion];
+    setQuestions(updatedQuestions);
+    validateQuestions(updatedQuestions);
+  };
+
+  const validateQuestions = questions => {
+    const errors = {};
+    questions.forEach((question, index) => {
+      if (!question.text.trim()) {
+        errors[`question-${question.id}`] = `Question ${index + 1} cannot be empty.`;
+      }
+      if (question.options.some(option => !option.text.trim())) {
+        errors[`options-${question.id}`] = `Options for Question ${index + 1} cannot be empty.`;
+      }
+      if (!question.correctAnswer.trim()) {
+        errors[`correctAnswer-${question.id}`] = `Correct answer for Question ${index + 1} cannot be empty.`;
+      }
+    });
+    setErrors(errors);
+  };
+
+  return (
+    <div className="previewcontainer">
+      <AdminNavbar />
+      <Container style={{ width: '70%', marginBottom: '10px', marginLeft: '17%' }}>
+        {questions.map((question, index) => (
+          <Card className="mb-3" key={question.id}>
+            <Card.Body>
+              <Row>
+                <Col>
+                  <Form.Group controlId={`question-${question.id}`}>
+                    <Form.Label>Question {index + 1}</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={2}
+                      value={question.text}
+                      style={{ width: '100%', marginBottom: '10px' }}
+                      onChange={e => handleEditQuestion(question.id, e.target.value)}
+                      readOnly={!question.isEditing}
+                      isInvalid={!!errors[`question-${question.id}`]}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors[`question-${question.id}`]}</Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group controlId={`options-${question.id}`}>
+                    <Form.Label>Options</Form.Label>
+                    {question.options.map(option => (
+                      <Row key={option.id}>
+                        <Col xs={6}>
+                          <Form.Control
+                            type="text"
+                            value={option.text}
+                            onChange={e => handleEditOption(question.id, option.id, e.target.value)}
+                            readOnly={!question.isEditing}
+                            placeholder={`Option`}
+                            style={{ width: '100%', marginBottom: '10px' }}
+                            isInvalid={!!errors[`options-${question.id}`]}
+                          />
+                        </Col>
+                      </Row>
+                    ))}
+                    <Form.Control.Feedback type="invalid">{errors[`options-${question.id}`]}</Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group controlId={`correctAnswer-${question.id}`}>
+                    <Form.Label>Correct Answer</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={question.correctAnswer}
+                      style={{ width: '100%', marginBottom: '10px' }}
+                      onChange={e => handleEditCorrectAnswer(question.id, e.target.value)}
+                      readOnly={!question.isEditing}
+                      isInvalid={!!errors[`correctAnswer-${question.id}`]}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors[`correctAnswer-${question.id}`]}</Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col md="auto">
+                  <div className="d-flex flex-column align-items-end">
+                    {question.isEditing ? (
+                      <Check2Square
+                        size={35}
+                        color="green"
+                        onClick={() => handleToggleEdit(question.id)}
+                        className="mr-2 icon"
+                      />
+                    ) : (
+                      <PencilSquare size={35} color="blue" onClick={() => handleToggleEdit(question.id)} className="mr-2 icon" />
+                    )}
+                    <TrashFill size={35} color="red" onClick={() => handleDeleteQuestion(question.id)} className="icon" />
+                  </div>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        ))}
+        <Row className="mt-2 justify-content-end">
+          <Col xs="auto">
+            <Button onClick={handleAddQuestion}>Add Question</Button>
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  );
+};
+
+export default QuizEditor;
+
 // import React, { useState, useEffect } from 'react';
 // import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
 // import { PencilSquare, TrashFill, Check2Square } from 'react-bootstrap-icons';

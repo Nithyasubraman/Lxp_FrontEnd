@@ -13,8 +13,9 @@ import './App.css'
 import './styles/CoursePage.css'
 import './styles/CreateQuiz.css'
 import QuestionTemplateView from './View/QuestionTemplateView';
-
-
+import ReviewQuestions from './components/QuizComponents/ReviewQuestions';
+import QuizNavbar from './components/QuizComponents/QuizNavbar';
+import QuizFeedback from './components/QuizFeedback';
 function App() {
   return (
       <Routes>
@@ -22,6 +23,9 @@ function App() {
         <Route path="/course" element={<CoursePage/>}/>
         <Route path="/" element={<CreateQuizView/>}/>  
         <Route path='/questiontemplate' element={<QuestionTemplateView/>}/>
+        <Route path='/reviewquestions' element={<ReviewQuestions/>}/>
+        <Route path='/quiznavbar' element={<QuizNavbar/>}/>
+        <Route path='/quizfeedback' element={<QuizFeedback/>}/>
         <Route path='/upload' element={
           <Provider store={store}>
             <div>

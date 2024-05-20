@@ -1,11 +1,17 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers,applyMiddleware } from 'redux';
 import quizReducer from '../reducers/quizReducer';
+import { thunk } from 'redux-thunk'; // Corrected import
+
+import { QuizFeedbackApi } from '../middleware/QuizFeedbackApi';
+import QuizFeedbackReducer from '../reducers/QuizFeedbackReducer';
+
 
 const rootReducer = combineReducers({
-  quiz: quizReducer
+  quiz: quizReducer,
+  quizfeedback:QuizFeedbackReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk,QuizFeedbackApi ));
 
 export default store;
 
