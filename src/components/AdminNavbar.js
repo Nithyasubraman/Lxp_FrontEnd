@@ -4,7 +4,7 @@ import { FaBars, FaSearch, FaCloudUploadAlt } from "react-icons/fa";
 import { BiSolidCoinStack } from "react-icons/bi";
 import { IoMdAddCircle } from "react-icons/io";
 import { Link } from 'react-router-dom';
-import '../Styles/AdminNavbar.css'; 
+import '../styles/AdminNavbar.css'; 
 import Relevantz from '../assets/images/Relevantz.png';
 
 function AdminNavbar() {

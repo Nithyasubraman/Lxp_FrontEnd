@@ -5,7 +5,8 @@ import { fetchQuizByIdSuccess, fetchQuizByIdRequest } from '../actions/CreateQui
 const createquiz = async (quizDetails) => {
   try {
     console.log("details", quizDetails);
-    const response = await axios.post('http://localhost:5199/api/Quiz', quizDetails);
+//     const response = await axios.post('http://localhost:5199/api/Quiz', quizDetails);
+    const response = await axios.post('http://localhost:5199/api/Quiz/22a43258-f99b-4b7b-98d9-40d5a3e09bc3', quizDetails);
   } catch (error) {
     console.error("Error:", error.message);
     throw error.message;
@@ -14,7 +15,9 @@ const createquiz = async (quizDetails) => {
 
 export const GetQuizDetails = async() =>{
   try {
-    const response = await axios.get('http://localhost:5199/api/Quiz/d609ff3e-5972-4340-97e0-7f46b55e8096');
+
+//     const response = await axios.get('http://localhost:5199/api/Quiz/d609ff3e-5972-4340-97e0-7f46b55e8096');
+    const response = await axios.get('http://localhost:5199/api/Quiz/22a43258-f99b-4b7b-98d9-40d5a3e09bc3');
     return response.data;
   } catch (error) {
     console.error("Error:", error.message);
@@ -24,7 +27,8 @@ export const GetQuizDetails = async() =>{
 
 export const PutQuizDetails = async(updatedQuizData) =>{
   try{
-    const response = await axios.put('http://localhost:5199/api/Quiz/d609ff3e-5972-4340-97e0-7f46b55e8096', updatedQuizData)
+//     const response = await axios.put('http://localhost:5199/api/Quiz/d609ff3e-5972-4340-97e0-7f46b55e8096', updatedQuizData)
+    const response = await axios.put('http://localhost:5199/api/Quiz/22a43258-f99b-4b7b-98d9-40d5a3e09bc3', updatedQuizData)
     console.log("Quiz edited successful",response.data);
   }catch (error) {
     console.error("Error:", error.message);
@@ -35,7 +39,8 @@ export const PutQuizDetails = async(updatedQuizData) =>{
 
 export const DeleteQuizDetails = async() =>{
   try{
-    const response = await axios.delete('http://localhost:5199/api/Quiz/d609ff3e-5972-4340-97e0-7f46b55e8096')
+//     const response = await axios.delete('http://localhost:5199/api/Quiz/d609ff3e-5972-4340-97e0-7f46b55e8096')
+    const response = await axios.delete('http://localhost:5199/api/Quiz/036f50d3-0c0c-4291-b510-f7e096d44f76')
     console.log("Quiz deleted successful",response.data);
   }catch (error) {
     console.error("Error:", error.message);

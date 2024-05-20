@@ -60,7 +60,8 @@ export const DeleteQuestion = async(quizQuestionId) =>{
 export const UpdateQuestion = async(quizQuestionId, requestBody) =>{
   console.log("update tequest body",requestBody)
   try {
-    const response = await axios.put(`http://localhost:5199/api/QuizQuestions/UpdateQuestion?quizQuestionId=${quizQuestionId}`, requestBody)
+//     const response = await axios.put(`http://localhost:5199/api/QuizQuestions/UpdateQuestion?quizQuestionId=${quizQuestionId}`, requestBody)
+    const response = await axios.put(`http://localhost:5199/api/QuizQuestions/UpdateQuestion?quizQuestionId=${quizQuestionId}`, requestBody);
     return response.data;
   } catch (error) {
     console.error("Error:", error.message);

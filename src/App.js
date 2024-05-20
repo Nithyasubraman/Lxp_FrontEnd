@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import QuizEditorView from './View/QuizEditorView';
 import CreateQuizView from './View/CreateQuizView';
 import QuizEditor from './components/QuizEditor';
@@ -8,8 +8,10 @@ import { Provider } from 'react-redux';
 // import store from './store/configureStore'; 
 import store from './Store/fileConfigureStore';
 import UploadBulkQuiz from './components/QuizComponents/UploadBulkQuiz';
+import CoursePage from "./components/QuizComponents/CoursePage";
 import './App.css'
-import './Styles/CreateQuiz.css'
+import './styles/CoursePage.css'
+import './styles/CreateQuiz.css'
 import QuestionTemplateView from './View/QuestionTemplateView';
 import ReviewQuestions from './components/QuizComponents/ReviewQuestions';
 import QuizNavbar from './components/QuizComponents/QuizNavbar';
@@ -18,18 +20,22 @@ function App() {
   return (
       <Routes>
         <Route path="/quiz" element={<QuizEditor />} />
+        <Route path="/course" element={<CoursePage/>}/>
         <Route path="/" element={<CreateQuizView/>}/>  
         <Route path='/questiontemplate' element={<QuestionTemplateView/>}/>
         <Route path='/reviewquestions' element={<ReviewQuestions/>}/>
         <Route path='/quiznavbar' element={<QuizNavbar/>}/>
         <Route path='/quizfeedback' element={<QuizFeedback/>}/>
         <Route path='/upload' element={
-          // <Provider store={store}>
-          //   <div>
+          <Provider store={store}>
+            <div>
               <UploadBulkQuiz />
-          //   </div>
-          // </Provider>
+      
+            </div>
+          </Provider>
         } />
+
+
       </Routes>
   )};
 export default App;
